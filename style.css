@@ -9,3 +9,5 @@
 #nextChannel{right:18px;}
 .player #video{position:relative;z-index:1;}
 @media(max-width:600px){.channelControls #now{top:12px;font-size:12px;max-width:55%;padding:7px 10px}.channelControls button{width:42px;height:58px;font-size:34px;border-radius:10px}#prevChannel{left:8px}#nextChannel{right:8px}}
+
+.channelControls.autoHidden{opacity:0;transition:opacity .35s;pointer-events:none}.channelControls{transition:opacity .2s}
