@@ -6,12 +6,32 @@ function cat(n){let s=n.toLowerCase();if(['news','ntc','king 24','citi channel',
 channels.forEach(c=>c.category=cat(c.name));
 categories.forEach(x=>{let b=document.createElement('button');b.textContent=x;b.onclick=()=>{current=x;document.querySelectorAll('nav button').forEach(q=>q.classList.remove('active'));b.classList.add('active');render()};if(x==='All')b.classList.add('active');cats.appendChild(b)});
 function initials(n){return n.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()}
-function render(){let q=document.getElementById('search').value.toLowerCase();let data=channels.filter(c=>(current==='All'||c.category===current)&&c.name.toLowerCase().includes(q));count.textContent=`(${data.length})`;grid.innerHTML='';data.forEach(c=>{let d=document.createElement('div');d.className='card';d.innerHTML=`<div style="position:relative"><span class="live">LIVE</span><div class="logo">${c.logo?`<img src="${c.logo}" style="max-width:80%;max-height:70%;object-fit:contain">`:initials(c.name)}</div></div><div class="name">${c.name}</div>`;d.onclick=()=>play(c);grid.appendChild(d)})}
+function render(){let q=document.getElementById('search').value.toLowerCase();let data=channels.filter(c=>(current==='All'||c.category===current)&&c.name.toLowerCase().includes(q));count.textContent=`(${data.length})`;grid.innerHTML='';data.forEach(c=>{let d=document.createElement('div');d.className='card';d.innerHTML=`<div style="position:relative"><span class="live">LIVE</span><div class="logo">${c.logo?`<img src="${c.logo}" style="max-width:80%;max-height:70%;object-fit:contain">`:initials(c.name)}</div></div><div class="name">${c.name}</div>`;d.onclick=()=>playChannel(c);grid.appendChild(d)})}
 function play(c){document.getElementById('player').classList.remove('hidden');document.getElementById('now').textContent=c.name;const v=document.getElementById('video');if(hls){hls.destroy();hls=null}v.pause();v.removeAttribute('src');if(c.url.includes('.m3u8')&&window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(c.url);hls.attachMedia(v);hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}))}else{v.src=c.url;v.play().catch(()=>{})}}
 let currentIndex=-1;
-function playAt(i){if(!channels.length)return;currentIndex=(i+channels.length)%channels.length;play(channels[currentIndex]);}
-const originalPlay=play;
-play=function(c){currentIndex=channels.indexOf(c);originalPlay(c)};
-document.getElementById('prevChannel').onclick=()=>playAt(currentIndex-1);
-document.getElementById('nextChannel').onclick=()=>playAt(currentIndex+1);
+function playAt(i){
+  if(!channels.length)return;
+  currentIndex=(i+channels.length)%channels.length;
+  const c=channels[currentIndex];
+  document.getElementById('player').classList.remove('hidden');
+  document.getElementById('now').textContent=c.name;
+  playChannel(c);
+}
+function playChannel(c){
+  currentIndex=channels.indexOf(c);
+  document.getElementById('player').classList.remove('hidden');
+  document.getElementById('now').textContent=c.name;
+  const v=document.getElementById('video');
+  if(hls){hls.destroy();hls=null}
+  v.pause();v.removeAttribute('src');v.load();
+  if(c.url.includes('.m3u8')&&window.Hls&&Hls.isSupported()){
+    hls=new Hls(); hls.loadSource(c.url); hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+  } else { v.src=c.url; v.play().catch(()=>{}); }
+}
+// Reliable touch/click handlers for mobile and desktop
+document.getElementById('prevChannel').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();playAt(currentIndex<=0?channels.length-1:currentIndex-1)});
+document.getElementById('nextChannel').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();playAt(currentIndex<0?0:(currentIndex+1)%channels.length)});
+document.getElementById('prevChannel').addEventListener('touchend',e=>{e.preventDefault();playAt(currentIndex<=0?channels.length-1:currentIndex-1)},{passive:false});
+document.getElementById('nextChannel').addEventListener('touchend',e=>{e.preventDefault();playAt(currentIndex<0?0:(currentIndex+1)%channels.length)},{passive:false});
 document.getElementById('close').onclick=()=>{document.getElementById('video').pause();if(hls){hls.destroy();hls=null}document.getElementById('player').classList.add('hidden')};document.getElementById('search').oninput=render;document.getElementById('theme').onclick=()=>document.body.classList.toggle('light');render();
