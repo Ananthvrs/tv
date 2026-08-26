@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JioTV Web Clone</title>
+    <title>JioTV Web Clone - Tamil Channels</title>
     <!-- HLS.js for streaming M3U8 links -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -24,7 +24,7 @@
 
         /* Sidebar Styling */
         .sidebar {
-            width: 260px;
+            width: 300px;
             background-color: #1a1c23;
             display: flex;
             flex-direction: column;
@@ -94,13 +94,22 @@
             transform: translateX(4px);
         }
 
-        .channel-item img {
+        .channel-icon {
             width: 35px;
             height: 35px;
-            object-fit: contain;
-            background: #fff;
+            background: #007bff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             border-radius: 50%;
-            padding: 2px;
+            font-size: 14px;
+        }
+
+        .channel-item.active .channel-icon {
+            background: #fff;
+            color: #007bff;
         }
 
         .channel-info h4 {
@@ -109,7 +118,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 170px;
+            max-width: 210px;
         }
 
         /* Main Content / Player Area */
@@ -183,7 +192,7 @@
             Jio<span>TV</span>
         </div>
         <div class="search-box">
-            <input type="text" id="searchBox" placeholder="சேனலை தேட..." onkeyup="filterChannels()">
+            <input type="text" id="searchBox" placeholder="சேனலைத் தேட..." onkeyup="filterChannels()">
         </div>
         <div class="channel-list" id="channelList">
             <!-- Channels will be loaded dynamically here -->
@@ -193,29 +202,139 @@
     <!-- Main Player Section -->
     <div class="main-content">
         <div class="player-container">
-            <div class="placeholder-text" id="placeholder">சேனலைத் தேர்ந்தெடுக்கவும்</div>
+            <div class="placeholder-text" id="placeholder">பட்டியலிலிருந்து ஒரு சேனலைத் தேர்ந்தெடுக்கவும்</div>
             <video id="videoPlayer" controls autoplay></video>
         </div>
         <div class="current-playing-info">
             <h2 id="channelTitle">எந்த சேனலும் இயங்கவில்லை</h2>
-            <p id="channelCategory">சேனலைத் தேர்வு செய்ய பட்டியலைப் பயன்படுத்தவும்.</p>
+            <p id="channelCategory">நேரலை ஒளிபரப்பைக் காண இடதுபுறம் உள்ள சேனலை அழுத்தவும்.</p>
         </div>
     </div>
 
     <script>
-        // உங்கள் M3U லிங்கை இங்கு கொடுக்கவும் அல்லது கீழே உள்ள Array-ல் தரவுகளைச் சேர்க்கலாம்
-        // உதாரணத்திற்கு சில மாதிரி சேனல் தரவுகள்:
+        // M3U Playlist Data
         const m3uData = [
-            {
-                name: "Kalaignar TV",
-                url: "YOUR_STREAM_LINK_HERE_1.m3u8",
-                logo: "https://via.placeholder.com/35"
-            },
-            {
-                name: "Sun TV",
-                url: "YOUR_STREAM_LINK_HERE_2.m3u8",
-                logo: "https://via.placeholder.com/35"
-            }
+            { name: "Sana TV", url: "https://stream.galaxyott.live/live/sanatv/index.m3u8" },
+            { name: "Sana TV [YuppTV]", url: "https://vglivessai.akamaized.net/us/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b6d9e864-ec16-410a-804d-ccf8f720bfaa/index.m3u8" },
+            { name: "Sana TV [Tata Play]", url: "https://cable75tataplay.akamaized.net/hls/sanatv.m3u8" },
+            { name: "Sana TV [OTTLive]", url: "https://stream.ottlive.co.in/sanatv/index.m3u8" },
+            { name: "Sana Plus", url: "https://galaxyott.live/hls/sanaplus.m3u8" },
+            { name: "Sana Plus [Tata Play]", url: "https://cable74tataplay.akamaized.net/hls/sanaplus.m3u8" },
+            { name: "Sana Plus [OTTLive]", url: "https://stream.ottlive.co.in/sanaplus/index.m3u8" },
+            { name: "NTC TV", url: "https://galaxyott.live/hls/ntv.m3u8" },
+            { name: "NTC TV [Tata Play]", url: "https://cable85tataplay.akamaized.net/live/ntvpkt/index.m3u8" },
+            { name: "Ultimate TV", url: "https://stream.galaxyott.live/live/utv/index.m3u8" },
+            { name: "Ultimate TV [Tata Play]", url: "https://cable92tataplay.akamaized.net/live/utv/index.m3u8" },
+            { name: "Ultimate TV [OTTLive]", url: "https://stream.ottlive.co.in/utvtamil/index.m3u8" },
+            { name: "Anandham TV", url: "https://server.sscloud7.in/live/anandhamtv/index.mpd" },
+            { name: "Suriya TV", url: "https://galaxyott.live/hls/suryatv.m3u8" },
+            { name: "Suriya TV [OTTLive]", url: "https://stream.ottlive.co.in/suryatvtamil/index.m3u8" },
+            { name: "Subin TV", url: "https://stream.galaxyott.live/live/subintv/index.m3u8" },
+            { name: "Subin TV [OTTLive]", url: "https://stream.ottlive.co.in/subintvtamil/index.m3u8" },
+            { name: "Dharsan TV", url: "https://galaxyott.live/hls/dharshantv.m3u8" },
+            { name: "Dharsan TV [Tata Play]", url: "https://cable91tataplay.akamaized.net/live/dharshantv/index.m3u8" },
+            { name: "Rock TV", url: "https://apis.avmediawork.in/tvhls/rocktv.m3u8" },
+            { name: "Rock TV [OTTLive]", url: "https://stream.ottlive.co.in/suriyantvtamil/index.m3u8" },
+            { name: "Aaryaa TV", url: "https://stream.ottlive.co.in/aryatvtamil/index.m3u8" },
+            { name: "Aaryaa TV [Cloud7]", url: "https://live.sscloud7.in/live/aaryaatv/index.m3u8" },
+            { name: "Roja TV", url: "https://rojatv.cloud/rojatv/rojatv/index.m3u8" },
+            { name: "Roja Movies", url: "https://live.rojatv.cloud/rojamovies/rojamovies/index.m3u8" },
+            { name: "Nijam TV", url: "https://nijamtv.nijamtv.org/live/nijamtv/index.m3u8" },
+            { name: "Nijam TV [IndiaMatrix]", url: "https://nijamtv.indiamatrix.in/nijamtv/nijamtv.m3u8" },
+            { name: "Nijam TV [GalaxyOTT]", url: "https://stream.galaxyott.live/live/nijamtv/index.m3u8" },
+            { name: "KC TV", url: "https://rtmp.bmlive.net/bms/kctv/stream.m3u8" },
+            { name: "KC Music", url: "https://rtmp.bmlive.net/bms/kcmusic/index.m3u8" },
+            { name: "Om Sakthi TV", url: "https://live1.sscloud7.com/live/omsakthitv/index.mpd" },
+            { name: "Oli TV", url: "https://live.olidigital.in/olitv/olitv/index.m3u8" },
+            { name: "Time TV", url: "https://live.olidigital.in/timetv/timetv/index.m3u8" },
+            { name: "Moon TV", url: "https://live.sscloud7.in/live/moontv/index.m3u8" },
+            { name: "NTN TV", url: "https://live.skystream.in/live/ntntv/index.m3u8" },
+            { name: "Kumari TV", url: "https://play.applelive.in/kumaritv/gvkumaritv.m3u8" },
+            { name: "Sakthi TV", url: "https://live.sscloud7.in/live/sakthitv/index.m3u8" },
+            { name: "Prime TV", url: "https://live.applelive.in/primetv/primetv/index.m3u8" },
+            { name: "Dtv", url: "https://stream.d6-pro.com/Dtv/live/index.m3u8" },
+            { name: "Dbhakhi", url: "https://stream.d6-pro.com/Dbhakhi/live/index.m3u8" },
+            { name: "Tharun Movies", url: "https://streaming.livebox.co.in/tharunmovieshls/live.m3u8" },
+            { name: "MN TV", url: "https://mntv.livebox.co.in/mntvhls/live.m3u8" },
+            { name: "GEM TV", url: "https://gemtv.circle7stream.com/gem/fcce47a8559e30755582c396ce7fce9e.sdp/playlist.m3u8" },
+            { name: "YET TV", url: "https://live.yettelevision.com:5443/LiveApp/streams/yettv.m3u8" },
+            { name: "YET Max", url: "https://sstudiostv.stream.onecloudlive.in/sstudiostv/yettv2/index.m3u8" },
+            { name: "Succes TV Tamil", url: "https://stream.onecloudlive.in/successtv/successtvhd/index.m3u8" },
+            { name: "Riya TV", url: "https://play.applelive.in/riyatv/riyatv.m3u8" },
+            { name: "Dark Television", url: "https://play.applelive.in/darktv/darktv.m3u8" },
+            { name: "Harin TV", url: "https://ipcloud.live/harintv/harintvhd/index.m3u8" },
+            { name: "Nila TV Pannur", url: "https://live.olidigital.in/nilatv/nilatv/index.m3u8" },
+            { name: "Sky Plus TV", url: "https://ipcloud.live/skytv/skytv/index.m3u8" },
+            { name: "Deavathai TV", url: "https://ipcloud.live/devadhaitv/devadhaitv/index.m3u8" },
+            { name: "APS TV Gold", url: "https://apsgold-a1.tamilstream.in/apsgold/apsgold/index.m3u8" },
+            { name: "Senthamil TV", url: "https://view.rcserver.in/tmp_hls16/senthamiltv/index.m3u8" },
+            { name: "Sailam TV", url: "https://stream.onecloudlive.in/sailamtv/sailamtv/index.m3u8" },
+            { name: "Sha TV", url: "https://play.applelive.in/shatv/shatv.m3u8" },
+            { name: "Mullai TV", url: "https://ipcloud.live/mullaitv/mullaitv/index.m3u8" },
+            { name: "Mullai TV [APCloud]", url: "https://live.apcloud.in/mullaitv/live/index.m3u8" },
+            { name: "Sakthi TV Nellai", url: "https://stream.onecloudlive.in/sachintv/sakthitv/index.m3u8" },
+            { name: "Sarvik TV", url: "https://live3.onecloudlive.in/sachintv/sarvikhd/index.m3u8" },
+            { name: "Queens 143", url: "https://notvstream.in/queens/queens/index.m3u8" },
+            { name: "Thendral TV Madurai", url: "https://w6oy7zkpdxrg-hls-live.5centscdn.com/THENDRALHD/aac0b08f91370cd39f61343d2b6e8069.sdp/playlist.m3u8" },
+            { name: "Namma Gobi TV", url: "https://cdn1.rojatv.cloud/nammagobi/tv/index.m3u8" },
+            { name: "Aadhavan Colours [APServer]", url: "https://view.apserver.in/tmp_hls4/aadhavancolours/index.m3u8" },
+            { name: "MSN TV", url: "https://ipcloud.live/msntv/msntv/index.m3u8" },
+            { name: "Ezra Bible Network", url: "https://stream.onecloudlive.in/riotv/riotvmax/index.m3u8" },
+            { name: "Veerali TV", url: "https://ipcloud.live/veerali/veeralitv/index.m3u8" },
+            { name: "King TV", url: "https://rtmp.bmlive.net/kingtv/kingtv/stream.m3u8" },
+            { name: "3 Star TV", url: "https://stream.onecloudlive.in/threestartv/threestarhd/index.mpd" },
+            { name: "Shalini TV Tiruvannamalai", url: "https://ipcloud.live/shalinitv/shalinitv/index.m3u8" },
+            { name: "Hai TV", url: "https://play.applelive.in/stv/stv.m3u8" },
+            { name: "JJ News Tamil", url: "https://hlsstream.olidigital.in/jjtvnewstamil/jjtvnewstamil/index.m3u8" },
+            { name: "Channel Spice", url: "https://stream.onecloudlive.in/spicetv/spicetv/index.m3u8" },
+            { name: "Urchagam TV", url: "https://rtmp.bmlive.net/bms/urchagamtv/stream.m3u8" },
+            { name: "Jeeva TV", url: "https://cdn1.rojatv.cloud/kumaran/tv/index.m3u8" },
+            { name: "Thendral TV", url: "https://hls.thendraltv.in/thendraltv_1210b43d/index.m3u8" },
+            { name: "Ganesh TV", url: "https://hls.thendraltv.in/ganeshtv_ade49abb/index.m3u8" },
+            { name: "Eagle TV Namakkal", url: "https://rtmp.bmlive.net/bms/eagletv/stream.m3u8" },
+            { name: "Mathi TV", url: "https://notvstream.in/mathitv/mathitv/index.m3u8" },
+            { name: "Rainbow TV", url: "https://live.cloudvu.in/rainbowtv/ssdslive/playlist.m3u8" },
+            { name: "Sai TV Madurai [NOTV]", url: "https://3.proxy.nellaiiptv.com/NOTV/SAITVMD/index.m3u8?token=GTR" },
+            { name: "Anbu TV", url: "https://ipcloud.live/anbutv/anbutvhd/index.m3u8" },
+            { name: "Nellai TV", url: "https://stream.onecloudlive.in/nellaitv/nellaitv/index.m3u8" },
+            { name: "SJ Surya TV", url: "https://ipcloud.live/nellaitv/suriyatv/index.m3u8" },
+            { name: "King 24x7", url: "https://notvstream.in/kingtv/kingtv/index.m3u8" },
+            { name: "Durai TV", url: "https://ipcloud.live/duraitv/live/index.m3u8" },
+            { name: "Durai Melodies", url: "https://stream.onecloudlive.in/duraitv/classic/index.m3u8" },
+            { name: "Apple TV Nagercoil", url: "https://play.applelive.in/appletv/appletv.m3u8" },
+            { name: "Jeyson TV", url: "https://play.applelive.in/jeysontv/jeysontv.m3u8" },
+            { name: "Kumari Kathir TV", url: "https://play.applelive.in/jjmax/jjmax.m3u8" },
+            { name: "Selfie TV", url: "https://play.applelive.in/selfeetv/selfeetv.m3u8" },
+            { name: "JC TV", url: "https://play.applelive.in/jctv/jctv.m3u8" },
+            { name: "Digital TV", url: "https://play.applelive.in/digitaltv/digitaltv.m3u8" },
+            { name: "NTV Trichy", url: "https://notvstream.in/ntv/ntv/index.m3u8" },
+            { name: "Arunai TV", url: "https://notvstream.in/arunaitv/arunaitv/index.m3u8" },
+            { name: "UTV Mayuram", url: "https://notvstream.in/utv/utv/index.m3u8" },
+            { name: "Thirumalai TV", url: "https://notvstream.in/thirumalaitv/thirumalaitv/index.m3u8" },
+            { name: "Subi TV", url: "https://notvstream.in/subitv/subitv/index.m3u8" },
+            { name: "Anandam TV", url: "https://notvstream.in/anandamtv/anandamtv/index.m3u8" },
+            { name: "Hitech TV", url: "https://notvstream.in/hitechtv/hitechtv/index.m3u8" },
+            { name: "Orange TV", url: "https://notvstream.in/orangetv/orangetv/index.m3u8" },
+            { name: "Leo TV", url: "https://ipcloud.live/leotv/leotvhd/index.m3u8" },
+            { name: "Aasai TV", url: "https://notvstream.in/aasaitv/aasaitv/index.m3u8" },
+            { name: "Aalaya Magimai TV", url: "https://stream.ashokadigital.net/aalayamagimaitv/aalayamagimaitv/index.m3u8" },
+            { name: "Dheiveegam TV", url: "https://stream.singamcloud.in/Dheiveegamtv/Dheiveegamtv/index.m3u8" },
+            { name: "Amman TV", url: "https://app.ashokadigital.net/app/78b1bc36/index.m3u8" },
+            { name: "Oscar TV", url: "https://account21.livebox.co.in/oscartvhls/live.m3u8" },
+            { name: "Bright Simrose TV", url: "https://notvstream.in/brightsimrosetv/brightsimrosetv/index.m3u8" },
+            { name: "Jeiyan TV", url: "https://stream.onecloudlive.in/jeyantv/jeyantv/index.m3u8" },
+            { name: "Velan TV", url: "https://cloudstream4k.com/velantvhdkanchi/bsk/playlist.m3u8" },
+            { name: "JRP TV", url: "https://ipcloud.live/jrptv/jrphd/index.m3u8" },
+            { name: "Kavin TV", url: "https://3.proxy.nellaiiptv.com/NOTV/KAVINTV/index.m3u8?token=GTR" },
+            { name: "Santhiya TV", url: "https://stream.onecloudlive.in/santhiyatv/santhiyatvhd/index.m3u8" },
+            { name: "Ragam TV", url: "https://account26.livebox.co.in/RAGAMMTPhls/live.m3u8" },
+            { name: "KCN TV", url: "https://view.rcserver.in/tmp_hls12/kcntv/index.m3u8" },
+            { name: "SS TV Nagercoil", url: "https://server.sscloud7.in/live/sshd/playlist.m3u8" },
+            { name: "Jith TV", url: "https://sscloud7.com/live/jithtv/index.m3u8" },
+            { name: "Sky TV", url: "https://sscloud7.com/live/skytv/index.m3u8" },
+            { name: "Boys TV", url: "https://rtmp.applelive.in/boystv/boystv/index.m3u8" },
+            { name: "Maniway TV", url: "https://live.singamcloud.in/bsctv/bsctv/index.m3u8" },
+            { name: "Surya TV", url: "https://surya.suriyantv.in/hls/app/index.m3u8" }
         ];
 
         const channelListContainer = document.getElementById('channelList');
@@ -228,11 +347,15 @@
 
         function loadChannels(channels) {
             channelListContainer.innerHTML = '';
-            channels.forEach((channel, index) => {
+            channels.forEach((channel) => {
                 const item = document.createElement('div');
                 item.className = 'channel-item';
+                
+                // First letter for channel avatar fallback
+                const firstLetter = channel.name.charAt(0).toUpperCase();
+
                 item.innerHTML = `
-                    <img src="${channel.logo || 'https://via.placeholder.com/35'}" alt="logo" onerror="this.src='https://via.placeholder.com/35'">
+                    <div class="channel-icon">${firstLetter}</div>
                     <div class="channel-info">
                         <h4>${channel.name}</h4>
                     </div>
@@ -243,16 +366,13 @@
         }
 
         function playChannel(channel, element) {
-            // Active class update
             document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
 
-            // Update info
             channelTitle.innerText = channel.name;
             channelCategory.innerText = "நேலை ஒளிபரப்பு (Live Stream)";
             placeholder.style.display = 'none';
 
-            // Play stream using HLS.js
             if (Hls.isSupported()) {
                 if (hls) {
                     hls.destroy();
