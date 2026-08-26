@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JioTV Web Clone - Tamil Channels</title>
+    <title>JioTV Web Player Clone</title>
     <!-- HLS.js for streaming M3U8 links -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -15,36 +15,161 @@
         }
 
         body {
-            background-color: #0f1015;
+            background-color: #0b0c10;
             color: #ffffff;
-            display: flex;
             height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Full Screen Player Container */
+        .player-container {
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
 
-        /* Sidebar Styling */
-        .sidebar {
-            width: 300px;
-            background-color: #1a1c23;
+        video {
+            width: 100%;
+            height: 100%;
+            outline: none;
+            object-fit: contain;
+        }
+
+        .placeholder-text {
+            position: absolute;
+            color: #aaa;
+            font-size: 20px;
+            text-align: center;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Overlay Controls Container (Auto-hide) */
+        .player-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.8) 100%);
+            z-index: 10;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #2a2e3d;
-        }
-
-        .logo-area {
+            justify-content: space-between;
             padding: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #007bff;
-            background: #14161c;
-            border-bottom: 1px solid #2a2e3d;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: opacity 0.4s ease;
         }
 
-        .logo-area span {
+        .player-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Top Bar inside Player */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-channels {
+            background: rgba(0, 123, 255, 0.8);
             color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: background 0.2s;
+        }
+
+        .btn-channels:hover {
+            background: rgba(0, 123, 255, 1);
+        }
+
+        .current-channel-title {
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 6px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: background 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Floating Channel Drawer (Sidebar inside player) */
+        .channel-drawer {
+            position: absolute;
+            top: 0;
+            left: -350px;
+            width: 330px;
+            height: 100%;
+            background: rgba(20, 22, 28, 0.95);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            transition: left 0.3s ease;
+        }
+
+        .channel-drawer.open {
+            left: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .drawer-header h3 {
+            color: #007bff;
+            font-size: 20px;
+        }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
         }
 
         .search-box {
@@ -54,8 +179,8 @@
         .search-box input {
             width: 100%;
             padding: 10px 15px;
-            background: #262935;
-            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: #fff;
             outline: none;
@@ -73,7 +198,7 @@
         }
 
         .channel-list::-webkit-scrollbar-thumb {
-            background: #33394d;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
 
@@ -81,9 +206,9 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
+            padding: 12px;
             margin-bottom: 8px;
-            background: #21242e;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -95,16 +220,16 @@
         }
 
         .channel-icon {
-            width: 35px;
-            height: 35px;
-            background: #007bff;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             border-radius: 50%;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .channel-item.active .channel-icon {
@@ -118,96 +243,40 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 210px;
-        }
-
-        /* Main Content / Player Area */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #0b0c10;
-        }
-
-        .player-container {
-            width: 100%;
-            height: 70vh;
-            background: #000;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            outline: none;
-        }
-
-        .placeholder-text {
-            position: absolute;
-            color: #666;
-            font-size: 18px;
-        }
-
-        .current-playing-info {
-            padding: 20px;
-            background: #14161c;
-            border-top: 1px solid #2a2e3d;
-            flex: 1;
-        }
-
-        .current-playing-info h2 {
-            font-size: 20px;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-
-        .current-playing-info p {
-            color: #8a8f9d;
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        @media(max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: 40vh;
-            }
-            .player-container {
-                height: 60vh;
-            }
+            max-width: 220px;
         }
     </style>
 </head>
-<body>
+<body onmousemove="resetHideTimer()" onclick="resetHideTimer()">
 
-    <!-- Sidebar: Channels -->
-    <div class="sidebar">
-        <div class="logo-area">
-            local<span>TV</span>
-        </div>
-        <div class="search-box">
-            <input type="text" id="searchBox" placeholder="சேனலைத் தேட..." onkeyup="filterChannels()">
-        </div>
-        <div class="channel-list" id="channelList">
-            <!-- Channels will be loaded dynamically here -->
-        </div>
-    </div>
+    <div class="player-container" id="playerContainer">
+        <div class="placeholder-text" id="placeholder">சேனலைத் தேர்ந்தெடுக்க 'Channels' பட்டனை அழுத்தவும்</div>
+        <video id="videoPlayer" controls autoplay></video>
 
-    <!-- Main Player Section -->
-    <div class="main-content">
-        <div class="player-container">
-            <div class="placeholder-text" id="placeholder">பட்டியலிலிருந்து ஒரு சேனலைத் தேர்ந்தெடுக்கவும்</div>
-            <video id="videoPlayer" controls autoplay></video>
+        <!-- Floating Channel Drawer (Sidebar) -->
+        <div class="channel-drawer" id="channelDrawer">
+            <div class="drawer-header">
+                <h3>JioTV Channels</h3>
+                <button class="close-drawer" onclick="toggleDrawer(event)">&times;</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchBox" placeholder="சேனலைத் தேட..." onkeyup="filterChannels()">
+            </div>
+            <div class="channel-list" id="channelList">
+                <!-- Channels loaded dynamically -->
+            </div>
         </div>
-        <div class="current-playing-info">
-            <h2 id="channelTitle">எந்த சேனலும் இயங்கவில்லை</h2>
-            <p id="channelCategory">நேரலை ஒளிபரப்பைக் காண இடதுபுறம் உள்ள சேனலை அழுத்தவும்.</p>
+
+        <!-- Auto-Hide Video Controls Overlay -->
+        <div class="player-overlay" id="playerOverlay">
+            <div class="top-bar">
+                <button class="btn-channels" onclick="toggleDrawer(event)">📺 Channels</button>
+                <div class="current-channel-title" id="currentTitle">எந்த சேனலும் இயங்கவில்லை</div>
+            </div>
+            <div class="bottom-bar">
+                <button class="control-btn" onclick="prevChannel()">⏮ Previous</button>
+                <button class="control-btn" onclick="nextChannel()">Next ⏭</button>
+            </div>
         </div>
     </div>
 
@@ -217,141 +286,45 @@
             { name: "Sana TV", url: "https://stream.galaxyott.live/live/sanatv/index.m3u8" },
             { name: "Sana TV [YuppTV]", url: "https://vglivessai.akamaized.net/us/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b6d9e864-ec16-410a-804d-ccf8f720bfaa/index.m3u8" },
             { name: "Sana TV [Tata Play]", url: "https://cable75tataplay.akamaized.net/hls/sanatv.m3u8" },
-            { name: "Sana TV [OTTLive]", url: "https://stream.ottlive.co.in/sanatv/index.m3u8" },
             { name: "Sana Plus", url: "https://galaxyott.live/hls/sanaplus.m3u8" },
-            { name: "Sana Plus [Tata Play]", url: "https://cable74tataplay.akamaized.net/hls/sanaplus.m3u8" },
-            { name: "Sana Plus [OTTLive]", url: "https://stream.ottlive.co.in/sanaplus/index.m3u8" },
             { name: "NTC TV", url: "https://galaxyott.live/hls/ntv.m3u8" },
-            { name: "NTC TV [Tata Play]", url: "https://cable85tataplay.akamaized.net/live/ntvpkt/index.m3u8" },
             { name: "Ultimate TV", url: "https://stream.galaxyott.live/live/utv/index.m3u8" },
-            { name: "Ultimate TV [Tata Play]", url: "https://cable92tataplay.akamaized.net/live/utv/index.m3u8" },
-            { name: "Ultimate TV [OTTLive]", url: "https://stream.ottlive.co.in/utvtamil/index.m3u8" },
             { name: "Anandham TV", url: "https://server.sscloud7.in/live/anandhamtv/index.mpd" },
             { name: "Suriya TV", url: "https://galaxyott.live/hls/suryatv.m3u8" },
-            { name: "Suriya TV [OTTLive]", url: "https://stream.ottlive.co.in/suryatvtamil/index.m3u8" },
             { name: "Subin TV", url: "https://stream.galaxyott.live/live/subintv/index.m3u8" },
-            { name: "Subin TV [OTTLive]", url: "https://stream.ottlive.co.in/subintvtamil/index.m3u8" },
             { name: "Dharsan TV", url: "https://galaxyott.live/hls/dharshantv.m3u8" },
-            { name: "Dharsan TV [Tata Play]", url: "https://cable91tataplay.akamaized.net/live/dharshantv/index.m3u8" },
             { name: "Rock TV", url: "https://apis.avmediawork.in/tvhls/rocktv.m3u8" },
-            { name: "Rock TV [OTTLive]", url: "https://stream.ottlive.co.in/suriyantvtamil/index.m3u8" },
             { name: "Aaryaa TV", url: "https://stream.ottlive.co.in/aryatvtamil/index.m3u8" },
-            { name: "Aaryaa TV [Cloud7]", url: "https://live.sscloud7.in/live/aaryaatv/index.m3u8" },
             { name: "Roja TV", url: "https://rojatv.cloud/rojatv/rojatv/index.m3u8" },
             { name: "Roja Movies", url: "https://live.rojatv.cloud/rojamovies/rojamovies/index.m3u8" },
             { name: "Nijam TV", url: "https://nijamtv.nijamtv.org/live/nijamtv/index.m3u8" },
-            { name: "Nijam TV [IndiaMatrix]", url: "https://nijamtv.indiamatrix.in/nijamtv/nijamtv.m3u8" },
-            { name: "Nijam TV [GalaxyOTT]", url: "https://stream.galaxyott.live/live/nijamtv/index.m3u8" },
             { name: "KC TV", url: "https://rtmp.bmlive.net/bms/kctv/stream.m3u8" },
-            { name: "KC Music", url: "https://rtmp.bmlive.net/bms/kcmusic/index.m3u8" },
             { name: "Om Sakthi TV", url: "https://live1.sscloud7.com/live/omsakthitv/index.mpd" },
             { name: "Oli TV", url: "https://live.olidigital.in/olitv/olitv/index.m3u8" },
-            { name: "Time TV", url: "https://live.olidigital.in/timetv/timetv/index.m3u8" },
             { name: "Moon TV", url: "https://live.sscloud7.in/live/moontv/index.m3u8" },
-            { name: "NTN TV", url: "https://live.skystream.in/live/ntntv/index.m3u8" },
             { name: "Kumari TV", url: "https://play.applelive.in/kumaritv/gvkumaritv.m3u8" },
             { name: "Sakthi TV", url: "https://live.sscloud7.in/live/sakthitv/index.m3u8" },
-            { name: "Prime TV", url: "https://live.applelive.in/primetv/primetv/index.m3u8" },
-            { name: "Dtv", url: "https://stream.d6-pro.com/Dtv/live/index.m3u8" },
-            { name: "Dbhakhi", url: "https://stream.d6-pro.com/Dbhakhi/live/index.m3u8" },
-            { name: "Tharun Movies", url: "https://streaming.livebox.co.in/tharunmovieshls/live.m3u8" },
-            { name: "MN TV", url: "https://mntv.livebox.co.in/mntvhls/live.m3u8" },
-            { name: "GEM TV", url: "https://gemtv.circle7stream.com/gem/fcce47a8559e30755582c396ce7fce9e.sdp/playlist.m3u8" },
-            { name: "YET TV", url: "https://live.yettelevision.com:5443/LiveApp/streams/yettv.m3u8" },
-            { name: "YET Max", url: "https://sstudiostv.stream.onecloudlive.in/sstudiostv/yettv2/index.m3u8" },
-            { name: "Succes TV Tamil", url: "https://stream.onecloudlive.in/successtv/successtvhd/index.m3u8" },
-            { name: "Riya TV", url: "https://play.applelive.in/riyatv/riyatv.m3u8" },
-            { name: "Dark Television", url: "https://play.applelive.in/darktv/darktv.m3u8" },
-            { name: "Harin TV", url: "https://ipcloud.live/harintv/harintvhd/index.m3u8" },
-            { name: "Nila TV Pannur", url: "https://live.olidigital.in/nilatv/nilatv/index.m3u8" },
-            { name: "Sky Plus TV", url: "https://ipcloud.live/skytv/skytv/index.m3u8" },
-            { name: "Deavathai TV", url: "https://ipcloud.live/devadhaitv/devadhaitv/index.m3u8" },
-            { name: "APS TV Gold", url: "https://apsgold-a1.tamilstream.in/apsgold/apsgold/index.m3u8" },
-            { name: "Senthamil TV", url: "https://view.rcserver.in/tmp_hls16/senthamiltv/index.m3u8" },
-            { name: "Sailam TV", url: "https://stream.onecloudlive.in/sailamtv/sailamtv/index.m3u8" },
-            { name: "Sha TV", url: "https://play.applelive.in/shatv/shatv.m3u8" },
-            { name: "Mullai TV", url: "https://ipcloud.live/mullaitv/mullaitv/index.m3u8" },
-            { name: "Mullai TV [APCloud]", url: "https://live.apcloud.in/mullaitv/live/index.m3u8" },
-            { name: "Sakthi TV Nellai", url: "https://stream.onecloudlive.in/sachintv/sakthitv/index.m3u8" },
-            { name: "Sarvik TV", url: "https://live3.onecloudlive.in/sachintv/sarvikhd/index.m3u8" },
-            { name: "Queens 143", url: "https://notvstream.in/queens/queens/index.m3u8" },
-            { name: "Thendral TV Madurai", url: "https://w6oy7zkpdxrg-hls-live.5centscdn.com/THENDRALHD/aac0b08f91370cd39f61343d2b6e8069.sdp/playlist.m3u8" },
-            { name: "Namma Gobi TV", url: "https://cdn1.rojatv.cloud/nammagobi/tv/index.m3u8" },
-            { name: "Aadhavan Colours [APServer]", url: "https://view.apserver.in/tmp_hls4/aadhavancolours/index.m3u8" },
-            { name: "MSN TV", url: "https://ipcloud.live/msntv/msntv/index.m3u8" },
-            { name: "Ezra Bible Network", url: "https://stream.onecloudlive.in/riotv/riotvmax/index.m3u8" },
-            { name: "Veerali TV", url: "https://ipcloud.live/veerali/veeralitv/index.m3u8" },
-            { name: "King TV", url: "https://rtmp.bmlive.net/kingtv/kingtv/stream.m3u8" },
-            { name: "3 Star TV", url: "https://stream.onecloudlive.in/threestartv/threestarhd/index.mpd" },
-            { name: "Shalini TV Tiruvannamalai", url: "https://ipcloud.live/shalinitv/shalinitv/index.m3u8" },
-            { name: "Hai TV", url: "https://play.applelive.in/stv/stv.m3u8" },
-            { name: "JJ News Tamil", url: "https://hlsstream.olidigital.in/jjtvnewstamil/jjtvnewstamil/index.m3u8" },
-            { name: "Channel Spice", url: "https://stream.onecloudlive.in/spicetv/spicetv/index.m3u8" },
-            { name: "Urchagam TV", url: "https://rtmp.bmlive.net/bms/urchagamtv/stream.m3u8" },
-            { name: "Jeeva TV", url: "https://cdn1.rojatv.cloud/kumaran/tv/index.m3u8" },
-            { name: "Thendral TV", url: "https://hls.thendraltv.in/thendraltv_1210b43d/index.m3u8" },
-            { name: "Ganesh TV", url: "https://hls.thendraltv.in/ganeshtv_ade49abb/index.m3u8" },
-            { name: "Eagle TV Namakkal", url: "https://rtmp.bmlive.net/bms/eagletv/stream.m3u8" },
-            { name: "Mathi TV", url: "https://notvstream.in/mathitv/mathitv/index.m3u8" },
-            { name: "Rainbow TV", url: "https://live.cloudvu.in/rainbowtv/ssdslive/playlist.m3u8" },
-            { name: "Sai TV Madurai [NOTV]", url: "https://3.proxy.nellaiiptv.com/NOTV/SAITVMD/index.m3u8?token=GTR" },
-            { name: "Anbu TV", url: "https://ipcloud.live/anbutv/anbutvhd/index.m3u8" },
-            { name: "Nellai TV", url: "https://stream.onecloudlive.in/nellaitv/nellaitv/index.m3u8" },
-            { name: "SJ Surya TV", url: "https://ipcloud.live/nellaitv/suriyatv/index.m3u8" },
-            { name: "King 24x7", url: "https://notvstream.in/kingtv/kingtv/index.m3u8" },
-            { name: "Durai TV", url: "https://ipcloud.live/duraitv/live/index.m3u8" },
-            { name: "Durai Melodies", url: "https://stream.onecloudlive.in/duraitv/classic/index.m3u8" },
-            { name: "Apple TV Nagercoil", url: "https://play.applelive.in/appletv/appletv.m3u8" },
-            { name: "Jeyson TV", url: "https://play.applelive.in/jeysontv/jeysontv.m3u8" },
-            { name: "Kumari Kathir TV", url: "https://play.applelive.in/jjmax/jjmax.m3u8" },
-            { name: "Selfie TV", url: "https://play.applelive.in/selfeetv/selfeetv.m3u8" },
-            { name: "JC TV", url: "https://play.applelive.in/jctv/jctv.m3u8" },
-            { name: "Digital TV", url: "https://play.applelive.in/digitaltv/digitaltv.m3u8" },
-            { name: "NTV Trichy", url: "https://notvstream.in/ntv/ntv/index.m3u8" },
-            { name: "Arunai TV", url: "https://notvstream.in/arunaitv/arunaitv/index.m3u8" },
-            { name: "UTV Mayuram", url: "https://notvstream.in/utv/utv/index.m3u8" },
-            { name: "Thirumalai TV", url: "https://notvstream.in/thirumalaitv/thirumalaitv/index.m3u8" },
-            { name: "Subi TV", url: "https://notvstream.in/subitv/subitv/index.m3u8" },
-            { name: "Anandam TV", url: "https://notvstream.in/anandamtv/anandamtv/index.m3u8" },
-            { name: "Hitech TV", url: "https://notvstream.in/hitechtv/hitechtv/index.m3u8" },
-            { name: "Orange TV", url: "https://notvstream.in/orangetv/orangetv/index.m3u8" },
-            { name: "Leo TV", url: "https://ipcloud.live/leotv/leotvhd/index.m3u8" },
-            { name: "Aasai TV", url: "https://notvstream.in/aasaitv/aasaitv/index.m3u8" },
-            { name: "Aalaya Magimai TV", url: "https://stream.ashokadigital.net/aalayamagimaitv/aalayamagimaitv/index.m3u8" },
-            { name: "Dheiveegam TV", url: "https://stream.singamcloud.in/Dheiveegamtv/Dheiveegamtv/index.m3u8" },
-            { name: "Amman TV", url: "https://app.ashokadigital.net/app/78b1bc36/index.m3u8" },
-            { name: "Oscar TV", url: "https://account21.livebox.co.in/oscartvhls/live.m3u8" },
-            { name: "Bright Simrose TV", url: "https://notvstream.in/brightsimrosetv/brightsimrosetv/index.m3u8" },
-            { name: "Jeiyan TV", url: "https://stream.onecloudlive.in/jeyantv/jeyantv/index.m3u8" },
-            { name: "Velan TV", url: "https://cloudstream4k.com/velantvhdkanchi/bsk/playlist.m3u8" },
-            { name: "JRP TV", url: "https://ipcloud.live/jrptv/jrphd/index.m3u8" },
-            { name: "Kavin TV", url: "https://3.proxy.nellaiiptv.com/NOTV/KAVINTV/index.m3u8?token=GTR" },
-            { name: "Santhiya TV", url: "https://stream.onecloudlive.in/santhiyatv/santhiyatvhd/index.m3u8" },
-            { name: "Ragam TV", url: "https://account26.livebox.co.in/RAGAMMTPhls/live.m3u8" },
-            { name: "KCN TV", url: "https://view.rcserver.in/tmp_hls12/kcntv/index.m3u8" },
-            { name: "SS TV Nagercoil", url: "https://server.sscloud7.in/live/sshd/playlist.m3u8" },
-            { name: "Jith TV", url: "https://sscloud7.com/live/jithtv/index.m3u8" },
-            { name: "Sky TV", url: "https://sscloud7.com/live/skytv/index.m3u8" },
-            { name: "Boys TV", url: "https://rtmp.applelive.in/boystv/boystv/index.m3u8" },
-            { name: "Maniway TV", url: "https://live.singamcloud.in/bsctv/bsctv/index.m3u8" },
             { name: "Surya TV", url: "https://surya.suriyantv.in/hls/app/index.m3u8" }
         ];
 
+        let currentIndex = -1;
+        let hls = null;
+        let hideTimeout = null;
+
         const channelListContainer = document.getElementById('channelList');
         const videoPlayer = document.getElementById('videoPlayer');
-        const channelTitle = document.getElementById('channelTitle');
-        const channelCategory = document.getElementById('channelCategory');
+        const currentTitle = document.getElementById('currentTitle');
         const placeholder = document.getElementById('placeholder');
-
-        let hls = null;
+        const channelDrawer = document.getElementById('channelDrawer');
+        const playerOverlay = document.getElementById('playerOverlay');
 
         function loadChannels(channels) {
             channelListContainer.innerHTML = '';
-            channels.forEach((channel) => {
+            channels.forEach((channel, idx) => {
+                const originalIndex = m3uData.findIndex(ch => ch.url === channel.url);
                 const item = document.createElement('div');
-                item.className = 'channel-item';
+                item.className = `channel-item ${currentIndex === originalIndex ? 'active' : ''}`;
                 
-                // First letter for channel avatar fallback
                 const firstLetter = channel.name.charAt(0).toUpperCase();
 
                 item.innerHTML = `
@@ -360,18 +333,25 @@
                         <h4>${channel.name}</h4>
                     </div>
                 `;
-                item.onclick = () => playChannel(channel, item);
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    playChannel(originalIndex);
+                    toggleDrawer(e); // Close drawer after selection
+                };
                 channelListContainer.appendChild(item);
             });
         }
 
-        function playChannel(channel, element) {
-            document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
+        function playChannel(index) {
+            if (index < 0 || index >= m3uData.length) return;
+            currentIndex = index;
+            const channel = m3uData[currentIndex];
 
-            channelTitle.innerText = channel.name;
-            channelCategory.innerText = "நேலை ஒளிபரப்பு (Live Stream)";
+            currentTitle.innerText = channel.name;
             placeholder.style.display = 'none';
+
+            // Update active states in list
+            filterChannels();
 
             if (Hls.isSupported()) {
                 if (hls) {
@@ -391,14 +371,45 @@
             }
         }
 
+        function nextChannel() {
+            if (m3uData.length === 0) return;
+            let nextIdx = (currentIndex + 1) % m3uData.length;
+            playChannel(nextIdx);
+        }
+
+        function prevChannel() {
+            if (m3uData.length === 0) return;
+            let prevIdx = (currentIndex - 1 + m3uData.length) % m3uData.length;
+            playChannel(prevIdx);
+        }
+
+        function toggleDrawer(e) {
+            e.stopPropagation();
+            channelDrawer.classList.toggle('open');
+        }
+
         function filterChannels() {
             const query = document.getElementById('searchBox').value.toLowerCase();
             const filtered = m3uData.filter(ch => ch.name.toLowerCase().includes(query));
             loadChannels(filtered);
         }
 
+        // Auto-Hide Controls Logic (3 seconds)
+        function resetHideTimer() {
+            playerOverlay.classList.remove('hidden');
+            clearTimeout(hideTimeout);
+            
+            // Drawer திறந்திருந்தால் ஓவர்லே மறையக்கூடாது
+            if (!channelDrawer.classList.contains('open')) {
+                hideTimeout = setTimeout(() => {
+                    playerOverlay.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
         // Initial Load
         loadChannels(m3uData);
+        resetHideTimer();
     </script>
 </body>
 </html>
