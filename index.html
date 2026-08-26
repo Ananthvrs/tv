@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <title>JioTV Clone</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; margin: 0; display: flex; }
+        .sidebar { width: 300px; height: 100vh; overflow-y: auto; background: #1e1e1e; padding: 10px; }
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        video { width: 80%; max-height: 70vh; background: #000; }
+        .controls { margin-top: 15px; }
+        button { padding: 10px 20px; background: #e50914; color: white; border: none; cursor: pointer; font-size: 16px; margin: 5px; }
+        button:hover { background: #b20710; }
+        .channel-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #333; }
+        .channel-item:hover { background: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <!-- சேனல் பட்டியல்கள் இங்கு தோன்றும் -->
+    </div>
+
+    <div class="main-content">
+        <h2 id="current-channel-name">சே சேனலைத் தேர்ந்தெடுக்கவும்</h2>
+        <video id="videoPlayer" controls autoplay></video>
+        
+        <div class="controls">
+            <button onclick="prevChannel()">Previous Channel</button>
+            <button onclick="nextChannel()">Next Channel</button>
+        </div>
+    </div>
+
+    <script>
+        let allChannels = []; // அனைத்து சேனல்களின் பட்டியல்
+        let currentIndex = 0;
+        const videoPlayer = document.getElementById('videoPlayer');
+        const channelTitle = document.getElementById('current-channel-name');
+
+        // பின்தளத்தில் இருந்து (Backend) அல்லது JSON வடிவத்தில் தரவுகளைப் பெறுவது
+        function loadChannels(channelsData) {
+            allChannels = channelsData;
+            renderSidebar();
+            if(allChannels.length > 0) playChannel(0);
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = '';
+            
+            allChannels.forEach((ch, index) => {
+                let div = document.createElement('div');
+                div.className = 'channel-item';
+                div.innerText = ch.name;
+                div.onclick = () => playChannel(index);
+                sidebar.appendChild(div);
+            });
+        }
+
+        function playChannel(index) {
+            if (index < 0 || index >= allChannels.length) return;
+            currentIndex = index;
+            let channel = allChannels[currentIndex];
+            
+            channelTitle.innerText = channel.name;
+            videoPlayer.src = channel.url;
+            videoPlayer.play();
+        }
+
+        function nextChannel() {
+            let nextIndex = (currentIndex + 1) % allChannels.length;
+            playChannel(nextIndex);
+        }
+
+        function prevChannel() {
+            let prevIndex = (currentIndex - 1 + allChannels.length) % allChannels.length;
+            playChannel(prevIndex);
+        }
+    </script>
+</body>
+</html>
