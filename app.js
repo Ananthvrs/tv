@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 function parseM3U(filePath) {
     const data = fs.readFileSync(filePath, 'utf-8');
     const lines = data.split('\n');
