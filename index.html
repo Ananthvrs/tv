@@ -180,12 +180,13 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.3s ease;
             pointer-events: none;
         }
 
         .player-overlay.hidden {
             opacity: 0;
+            pointer-events: none;
         }
 
         .player-overlay * {
@@ -199,9 +200,9 @@
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
@@ -212,13 +213,13 @@
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
         }
 
         .current-channel-name {
             font-size: 16px;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             padding: 8px 15px;
             border-radius: 6px;
             backdrop-filter: blur(5px);
@@ -233,9 +234,9 @@
         }
 
         .control-btn {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 10px 22px;
             border-radius: 30px;
             font-size: 14px;
@@ -251,7 +252,7 @@
         }
     </style>
 </head>
-<body onmousemove="resetHideTimer()" ontouchstart="resetHideTimer()">
+<body>
 
     <!-- Home Screen with Channel Grid -->
     <div class="home-screen" id="homeScreen">
@@ -267,18 +268,18 @@
     </div>
 
     <!-- Full Screen Video Player Screen -->
-    <div class="player-screen" id="playerScreen" onclick="resetHideTimer()">
+    <div class="player-screen" id="playerScreen" onclick="handlePlayerClick(event)">
         <video id="videoPlayer" controls autoplay></video>
 
         <!-- Transparent Overlay Controls (Auto-hide in 3s) -->
-        <div class="player-overlay" id="playerOverlay">
+        <div class="player-overlay hidden" id="playerOverlay">
             <div class="top-control-bar">
-                <button class="back-btn" onclick="goBackToHome()">⬅ Back</button>
+                <button class="back-btn" onclick="goBackToHome(event)">⬅ Back</button>
                 <div class="current-channel-name" id="currentTitle">Channel Name</div>
             </div>
             <div class="bottom-control-bar">
-                <button class="control-btn" onclick="prevChannel()">⏮ Previous</button>
-                <button class="control-btn" onclick="nextChannel()">Next ⏭</button>
+                <button class="control-btn" onclick="prevChannel(event)">⏮ Previous</button>
+                <button class="control-btn" onclick="nextChannel(event)">Next ⏭</button>
             </div>
         </div>
     </div>
@@ -369,29 +370,32 @@
                 });
             }
 
-            resetHideTimer();
+            // Show controls initially when a channel is played, then auto-hide
+            showControlsTemporarily();
         }
 
-        function goBackToHome() {
-            // Pause video to save bandwidth/stream
+        function goBackToHome(e) {
+            e.stopPropagation();
             videoPlayer.pause();
             if (hls) {
                 hls.destroy();
                 hls = null;
             }
 
-            // Switch screens: Show Home, Hide Player
             playerScreen.classList.remove('active');
             homeScreen.classList.remove('hidden');
+            playerOverlay.classList.add('hidden');
         }
 
-        function nextChannel() {
+        function nextChannel(e) {
+            e.stopPropagation();
             if (m3uData.length === 0) return;
             let nextIdx = (currentIndex + 1) % m3uData.length;
             playChannel(nextIdx);
         }
 
-        function prevChannel() {
+        function prevChannel(e) {
+            e.stopPropagation();
             if (m3uData.length === 0) return;
             let prevIdx = (currentIndex - 1 + m3uData.length) % m3uData.length;
             playChannel(prevIdx);
@@ -403,16 +407,24 @@
             loadHomeChannels(filtered);
         }
 
-        // Auto-Hide Controls Logic (3 seconds)
-        function resetHideTimer() {
-            if (playerScreen.classList.contains('active')) {
-                playerOverlay.classList.remove('hidden');
+        // Handle Player Click/Tap to show/hide controls
+        function handlePlayerClick(e) {
+            // Toggle overlay visibility on click
+            if (playerOverlay.classList.contains('hidden')) {
+                showControlsTemporarily();
+            } else {
+                playerOverlay.classList.add('hidden');
                 clearTimeout(hideTimeout);
-                
-                hideTimeout = setTimeout(() => {
-                    playerOverlay.classList.add('hidden');
-                }, 3000);
             }
+        }
+
+        function showControlsTemporarily() {
+            playerOverlay.classList.remove('hidden');
+            clearTimeout(hideTimeout);
+            
+            hideTimeout = setTimeout(() => {
+                playerOverlay.classList.add('hidden');
+            }, 3000);
         }
 
         // Initial Load
