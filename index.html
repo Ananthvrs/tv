@@ -1,189 +1,392 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#222">
-<title>Tamil Live TV</title>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<style>
-*{box-sizing:border-box}html,body{margin:0;background:#090909;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;height:100%;overflow:hidden}
-body{min-height:100vh;overflow:hidden}.app{max-width:900px;margin:auto;height:100vh;overflow:hidden;background:linear-gradient(#343434 0,#121212 27%,#080808 55%);padding-bottom:0}
-.top{height:88px;display:flex;align-items:center;padding:18px 18px 10px;gap:14px}
-.logo{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700}.logoMark{width:48px;height:48px;border-radius:50%;background:#d50038;display:grid;place-items:center;box-shadow:0 5px 18px #0008}
-.logoMark:before{content:"▶";font-size:22px;color:white;margin-left:3px}
-.actions{margin-left:auto;display:flex;gap:10px}.round{width:52px;height:52px;border:1px solid #7778;border-radius:50%;background:#ffffff12;color:white;display:grid;place-items:center;font-size:24px}
-.hero{padding:0 12px}.player{position:relative;background:#000;border-radius:17px;height:min(48vw,400px);min-height:230px;overflow:hidden;box-shadow:0 12px 35px #0008}
-video{width:100%;height:100%;object-fit:contain;background:#000}.empty{position:absolute;inset:0;display:grid;place-items:center;color:#777;font-size:15px}
-.playerTitle{padding:14px 10px 5px;font-size:19px;font-weight:700}.meta{color:#aaa;font-size:15px;padding:0 10px 14px}.playerDots{position:absolute;right:18px;bottom:12px;font-size:25px}
-.controls{position:absolute;inset:0;display:block;pointer-events:none;opacity:1;transition:.25s}.player:hover .controls,.player.show .controls{opacity:1}
-.ctrl{position:absolute;top:50%;transform:translateY(-50%);border:1px solid #fff5;background:#111c;color:white;border-radius:50%;width:48px;height:48px;font-size:30px;line-height:1;display:grid;place-items:center;pointer-events:auto;backdrop-filter:blur(8px);box-shadow:0 4px 15px #0008}.ctrl:first-child{left:14px}.ctrl:last-child{right:14px}
-.pillrow{display:flex;gap:12px;overflow:auto;padding:18px 12px 12px;scrollbar-width:none}.pillrow::-webkit-scrollbar{display:none}
-.pill{flex:0 0 auto;border:1px solid #777;background:#222;color:#fff;padding:12px 18px;border-radius:25px;font-size:15px}.pill.active{background:#9d6873;border-color:#d79aa7}
-.searchbox{display:none;padding:0 12px 12px}.searchbox input{width:100%;padding:14px 18px;border-radius:24px;border:1px solid #555;background:#202020;color:white;outline:none;font-size:16px}
-.list{padding:4px 12px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;overflow-x:hidden;height:calc(100vh - 650px);min-height:160px;scrollbar-width:thin}.card{display:grid;grid-template-columns:150px 120px 1fr;gap:14px;align-items:center;background:#1d1d1f;border-radius:20px;padding:10px;min-height:115px;cursor:pointer;transition:.2s}.card:hover{background:#29292b;transform:translateY(-1px)}
-.chlogo{height:100px;border-radius:18px;background:linear-gradient(135deg,#252525,#101010);display:grid;place-items:center;font-size:21px;font-weight:800;text-align:center;padding:10px;overflow:hidden}
-.chlogo img{width:100%;height:100%;object-fit:contain}.poster{height:100px;border-radius:18px;overflow:hidden;background:#2a2a2a;display:grid;place-items:center;color:#777;font-size:32px}
-.info{min-width:0}.name{font-size:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.time{color:#aaa;margin-top:22px;font-size:15px}.bar{height:5px;border-radius:10px;background:#777;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;width:62%;background:#eee}.card.active{outline:2px solid #d13b68}
-.bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:14px;width:min(680px,calc(100% - 30px));height:76px;border-radius:40px;background:#252527e8;border:1px solid #7776;box-shadow:0 8px 35px #000b;display:flex;justify-content:space-around;align-items:center;backdrop-filter:blur(18px)}
-.nav{width:20%;text-align:center;color:#eee;font-size:13px}.nav b{display:block;font-size:28px;line-height:34px}.nav.active{color:#ff416d}.count{color:#999;font-size:12px;margin:4px 12px}
-@media(max-width:650px){.app{width:100%}.top{height:86px;padding:16px 14px 8px}.logo{font-size:23px}.round{width:50px;height:50px}.hero{padding:0}.player{border-radius:15px;height:51vw;min-height:220px}.playerTitle{font-size:18px}.card{grid-template-columns:92px 108px 1fr;gap:10px;min-height:112px;padding:8px;border-radius:18px}.chlogo,.poster{height:96px;border-radius:15px}.name{font-size:16px}.time{margin-top:14px;font-size:13px}.list{gap:10px;padding:4px 10px;height:calc(100vh - 610px);min-height:150px}.pillrow{padding-left:10px}.bottom{height:72px;bottom:8px;width:calc(100% - 20px)}}
-@media(max-width:430px){.card{grid-template-columns:82px 94px 1fr}.chlogo,.poster{height:92px}.name{font-size:15px}.time{font-size:12px}.logoMark{width:44px;height:44px}.logo{font-size:21px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JioTV Style Web TV</title>
+    <!-- HLS.js for m3u8 playback -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --card-bg: #1f1f1f;
+            --card-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent-color: #e50914;
+            --border-radius: 12px;
+        }
 
-<style id="tamil-bottom-nav">
-.bottom{
-  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
-  width:min(92vw,650px);height:78px;padding:7px;
-  display:grid;grid-template-columns:repeat(5,1fr);gap:4px;
-  background:rgba(28,28,30,.92);border:1px solid rgba(255,255,255,.14);
-  border-radius:42px;box-shadow:0 10px 35px rgba(0,0,0,.45);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  z-index:1000;
-}
-.bottom .nav-item{
-  border:0;background:transparent;color:#ddd;border-radius:32px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;font:600 12px/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  cursor:pointer;min-width:0;padding:5px 2px;
-}
-.bottom .nav-icon{font-size:27px;line-height:25px;font-weight:700}
-.bottom .nav-item.active{
-  color:#fff;background:linear-gradient(180deg,rgba(245,65,104,.30),rgba(245,65,104,.12));
-}
-.bottom .nav-item.active .nav-icon{color:#ff426c}
-@media(max-width:520px){
-  .bottom{width:calc(100vw - 30px);height:72px;bottom:10px}
-  .bottom .nav-item{font-size:11px}
-  .bottom .nav-icon{font-size:24px}
-}
-</style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid #222;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-logo {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .app-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: #222;
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Sticky Video Player Container */
+        .player-container {
+            width: 100%;
+            background-color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 35vh;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .now-playing-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: #141414;
+            border-bottom: 1px solid #222;
+        }
+
+        .np-details h2 {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .np-details p {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Filter Pills */
+        .filters {
+            display: flex;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-color);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-pill {
+            background: #222;
+            color: var(--text-primary);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-pill.active {
+            background: #333;
+            border: 1px solid #555;
+        }
+
+        /* Channel List Container (JioTV Grid Layout) */
+        .channel-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 16px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .channel-row {
+            display: grid;
+            grid-template-columns: 85px 1fr;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .channel-row:hover, .channel-row.active {
+            background-color: var(--card-hover);
+            border-color: #444;
+        }
+
+        .channel-badge-box {
+            background: #262626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            text-align: center;
+            border-right: 1px solid #333;
+            position: relative;
+        }
+
+        .channel-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .channel-program-info {
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .prog-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ddd;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .prog-time {
+            font-size: 9px;
+            color: var(--text-secondary);
+        }
+
+        .prog-progress {
+            width: 100%;
+            height: 2px;
+            background: #444;
+            border-radius: 2px;
+            margin-top: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prog-progress-bar {
+            width: 45%;
+            height: 100%;
+            background: var(--accent-color);
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-<header class="top">
-  <div class="logo"><span class="logoMark"></span><span>Tamil TV</span></div>
-  <div class="actions"><button class="round" id="searchBtn">⌕</button><button class="round">●</button></div>
-</header>
 
-<section class="hero">
-  <div class="player" id="playerBox">
-    <video id="video" controls playsinline></video>
-    <div class="empty" id="empty">Select a channel to start</div>
-    <div class="controls">
-      <button class="ctrl" id="prevBtn">‹</button>
-      <button class="ctrl" id="nextBtn">›</button>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-area">
+            <div class="app-logo">▶ JioTV</div>
+            <span class="app-title">Web TV</span>
+        </div>
+        <div class="header-icons">
+            <button class="icon-btn">🔍</button>
+            <button class="icon-btn">👤</button>
+        </div>
     </div>
-  </div>
-  <div class="playerTitle" id="nowTitle">Tamil Live TV</div>
-  <div class="meta" id="nowMeta">Select a channel • Live</div>
-</section>
 
-<div class="searchbox" id="searchBox"><input id="search" placeholder="Search channels…"></div>
+    <!-- Video Player Container (Sticky) -->
+    <div class="player-container">
+        <div class="video-wrapper">
+            <video id="videoPlayer" controls autoplay playsinline></video>
+        </div>
+        <div class="now-playing-info">
+            <div class="np-details">
+                <h2 id="currentChannelName">Select a channel</h2>
+                <p id="currentProgramTime">Live Broadcast | Tamil Channels</p>
+            </div>
+        </div>
+    </div>
 
-<div class="pillrow">
-  <button class="pill active" data-filter="all">▣ All Channels</button>
-  <button class="pill" data-filter="music">♫ Music</button>
-  <button class="pill" data-filter="movie">▶ Movies</button>
-  <button class="pill" data-filter="news">● News</button>
-  <button class="pill" data-filter="devotional">✦ Devotional</button>
-</div>
-<div class="count" id="count"></div>
-<main class="list" id="list"></main>
-</div>
+    <!-- Filters -->
+    <div class="filters">
+        <button class="filter-pill active">📅 Today</button>
+        <button class="filter-pill">⚡ Filters (All)</button>
+        <button class="filter-pill">⭐ Premium</button>
+        <button class="filter-pill">📺 Live TV</button>
+    </div>
 
+    <!-- Channels List -->
+    <div class="channel-list" id="channelList">
+        <!-- Dynamic content will be injected here -->
+    </div>
 
+    <script>
+        const channels = [{"name": "Sana TV", "url": "https://stream.galaxyott.live/live/sanatv/index.m3u8"}, {"name": "Sana TV [YuppTV]", "url": "https://vglivessai.akamaized.net/us/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b6d9e864-ec16-410a-804d-ccf8f720bfaa/index.m3u8"}, {"name": "Sana TV [Tata Play]", "url": "https://cable75tataplay.akamaized.net/hls/sanatv.m3u8"}, {"name": "Sana TV [OTTLive]", "url": "https://stream.ottlive.co.in/sanatv/index.m3u8"}, {"name": "Sana Plus", "url": "https://galaxyott.live/hls/sanaplus.m3u8"}, {"name": "Sana Plus [Tata Play]", "url": "https://cable74tataplay.akamaized.net/hls/sanaplus.m3u8"}, {"name": "Sana Plus [OTTLive]", "url": "https://stream.ottlive.co.in/sanaplus/index.m3u8"}, {"name": "NTC TV", "url": "https://galaxyott.live/hls/ntv.m3u8"}, {"name": "NTC TV [Tata Play]", "url": "https://cable85tataplay.akamaized.net/live/ntvpkt/index.m3u8"}, {"name": "Ultimate TV", "url": "https://stream.galaxyott.live/live/utv/index.m3u8"}, {"name": "Ultimate TV [Tata Play]", "url": "https://cable92tataplay.akamaized.net/live/utv/index.m3u8"}, {"name": "Ultimate TV [OTTLive]", "url": "https://stream.ottlive.co.in/utvtamil/index.m3u8"}, {"name": "Anandham TV", "url": "https://server.sscloud7.in/live/anandhamtv/index.mpd"}, {"name": "Suriya TV", "url": "https://galaxyott.live/hls/suryatv.m3u8"}, {"name": "Suriya TV [OTTLive]", "url": "https://stream.ottlive.co.in/suryatvtamil/index.m3u8"}, {"name": "Subin TV", "url": "https://stream.galaxyott.live/live/subintv/index.m3u8"}, {"name": "Subin TV [OTTLive]", "url": "https://stream.ottlive.co.in/subintvtamil/index.m3u8"}, {"name": "Dharsan TV", "url": "https://galaxyott.live/hls/dharshantv.m3u8"}, {"name": "Dharsan TV [Tata Play]", "url": "https://cable91tataplay.akamaized.net/live/dharshantv/index.m3u8"}, {"name": "Rock TV", "url": "https://apis.avmediawork.in/tvhls/rocktv.m3u8"}, {"name": "Rock TV [OTTLive]", "url": "https://stream.ottlive.co.in/suriyantvtamil/index.m3u8"}, {"name": "Aaryaa TV", "url": "https://stream.ottlive.co.in/aryatvtamil/index.m3u8"}, {"name": "Aaryaa TV [Cloud7]", "url": "https://live.sscloud7.in/live/aaryaatv/index.m3u8"}, {"name": "Roja TV", "url": "https://rojatv.cloud/rojatv/rojatv/index.m3u8"}, {"name": "Roja TV", "url": "https://live.rojatv.cloud/rojatv/rojatv/index.m3u8"}, {"name": "Roja TV", "url": "https://hls.rojatv.cloud/rojatv/rojatv/index.m3u8"}, {"name": "Roja Movies", "url": "https://live.rojatv.cloud/rojamovies/rojamovies/index.m3u8"}, {"name": "Roja Movies", "url": "https://stream.rojatv.cloud/rojatv/rojatv/index.m3u8"}, {"name": "Nijam TV", "url": "https://nijamtv.nijamtv.org/live/nijamtv/index.m3u8"}, {"name": "Nijam TV [IndiaMatrix]", "url": "https://nijamtv.indiamatrix.in/nijamtv/nijamtv.m3u8"}, {"name": "Nijam TV [GalaxyOTT]", "url": "https://stream.galaxyott.live/live/nijamtv/index.m3u8"}, {"name": "KC TV", "url": "https://rtmp.bmlive.net/bms/kctv/stream.m3u8"}, {"name": "KC Music", "url": "https://rtmp.bmlive.net/bms/kcmusic/index.m3u8"}, {"name": "Om Sakthi TV", "url": "https://live1.sscloud7.com/live/omsakthitv/index.mpd"}, {"name": "Oli TV", "url": "https://live.olidigital.in/olitv/olitv/index.m3u8"}, {"name": "Time TV", "url": "https://live.olidigital.in/timetv/timetv/index.m3u8"}, {"name": "Moon TV", "url": "https://live.sscloud7.in/live/moontv/index.m3u8"}, {"name": "NTN TV", "url": "https://live.skystream.in/live/ntntv/index.m3u8"}, {"name": "Kumari TV", "url": "https://play.applelive.in/kumaritv/gvkumaritv.m3u8"}, {"name": "Sakthi TV", "url": "https://live.sscloud7.in/live/sakthitv/index.m3u8"}, {"name": "Prime TV", "url": "https://live.applelive.in/primetv/primetv/index.m3u8"}, {"name": "Dtv", "url": "https://stream.d6-pro.com/Dtv/live/index.m3u8"}, {"name": "Dbhakthi", "url": "https://stream.d6-pro.com/Dbhakhi/live/index.m3u8"}, {"name": "Tharun Movies", "url": "https://streaming.livebox.co.in/tharunmovieshls/live.m3u8"}, {"name": "MN TV", "url": "https://mntv.livebox.co.in/mntvhls/live.m3u8"}, {"name": "GEM TV", "url": "https://gemtv.circle7stream.com/gem/fcce47a8559e30755582c396ce7fce9e.sdp/playlist.m3u8"}, {"name": "YET TV", "url": "https://live.yettelevision.com:5443/LiveApp/streams/yettv.m3u8"}, {"name": "YET Max", "url": "https://sstudiostv.stream.onecloudlive.in/sstudiostv/yettv2/index.m3u8"}, {"name": "Succes TV Tamil", "url": "https://stream.onecloudlive.in/successtv/successtvhd/index.m3u8"}, {"name": "Riya TV", "url": "https://play.applelive.in/riyatv/riyatv.m3u8"}, {"name": "Dark Television", "url": "https://play.applelive.in/darktv/darktv.m3u8"}, {"name": "Harin TV", "url": "https://ipcloud.live/harintv/harintvhd/index.m3u8"}, {"name": "Nila TV Pannur", "url": "https://live.olidigital.in/nilatv/nilatv/index.m3u8"}, {"name": "Sky Plus TV", "url": "https://ipcloud.live/skytv/skytv/index.m3u8"}, {"name": "Deavathai TV", "url": "https://ipcloud.live/devadhaitv/devadhaitv/index.m3u8"}, {"name": "APS TV Gold", "url": "https://apsgold-a1.tamilstream.in/apsgold/apsgold/index.m3u8"}, {"name": "Senthamil TV", "url": "https://view.rcserver.in/tmp_hls16/senthamiltv/index.m3u8"}, {"name": "Sailam TV", "url": "https://stream.onecloudlive.in/sailamtv/sailamtv/index.m3u8"}, {"name": "Sha TV", "url": "https://play.applelive.in/shatv/shatv.m3u8"}, {"name": "Mullai TV", "url": "https://ipcloud.live/mullaitv/mullaitv/index.m3u8"}, {"name": "Mullai TV [APCloud]", "url": "https://live.apcloud.in/mullaitv/live/index.m3u8"}, {"name": "Sakthi TV Nellai", "url": "https://stream.onecloudlive.in/sachintv/sakthitv/index.m3u8"}, {"name": "Sarvik TV", "url": "https://live3.onecloudlive.in/sachintv/sarvikhd/index.m3u8"}, {"name": "Queens 143", "url": "https://notvstream.in/queens/queens/index.m3u8"}, {"name": "Thendral TV Madurai", "url": "https://w6oy7zkpdxrg-hls-live.5centscdn.com/THENDRALHD/aac0b08f91370cd39f61343d2b6e8069.sdp/playlist.m3u8"}, {"name": "Namma Gobi TV", "url": "https://cdn1.rojatv.cloud/nammagobi/tv/index.m3u8"}, {"name": "Aadhavan Colours [APServer]", "url": "https://view.apserver.in/tmp_hls4/aadhavancolours/index.m3u8"}, {"name": "MSN TV", "url": "https://ipcloud.live/msntv/msntv/index.m3u8"}, {"name": "Ezra Bible Network", "url": "https://stream.onecloudlive.in/riotv/riotvmax/index.m3u8"}, {"name": "Veerali TV", "url": "https://ipcloud.live/veerali/veeralitv/index.m3u8"}, {"name": "King TV", "url": "https://rtmp.bmlive.net/kingtv/kingtv/stream.m3u8"}, {"name": "3 Star TV", "url": "https://stream.onecloudlive.in/threestartv/threestarhd/index.mpd"}, {"name": "Shalini TV Tiruvannamalai", "url": "https://ipcloud.live/shalinitv/shalinitv/index.m3u8"}, {"name": "Hai TV", "url": "https://play.applelive.in/stv/stv.m3u8"}, {"name": "JJ News Tamil", "url": "https://hlsstream.olidigital.in/jjtvnewstamil/jjtvnewstamil/index.m3u8"}, {"name": "Channel Spice", "url": "https://stream.onecloudlive.in/spicetv/spicetv/index.m3u8"}, {"name": "Channel Spice [MPD]", "url": "https://stream.onecloudlive.in/spicetv/spicetv/index.mpd"}, {"name": "Urchagam TV", "url": "https://rtmp.bmlive.net/bms/urchagamtv/stream.m3u8"}, {"name": "Jeeva TV", "url": "https://cdn1.rojatv.cloud/kumaran/tv/index.m3u8"}, {"name": "Thendral TV", "url": "https://hls.thendraltv.in/thendraltv_1210b43d/index.m3u8"}, {"name": "Ganesh TV", "url": "https://hls.thendraltv.in/ganeshtv_ade49abb/index.m3u8"}, {"name": "Eagle TV Namakkal", "url": "https://rtmp.bmlive.net/bms/eagletv/stream.m3u8"}, {"name": "Mathi TV", "url": "https://notvstream.in/mathitv/mathitv/index.m3u8"}, {"name": "Rainbow TV", "url": "https://live.cloudvu.in/rainbowtv/ssdslive/playlist.m3u8"}, {"name": "Sai TV Madurai [NOTV]", "url": "https://3.proxy.nellaiiptv.com/NOTV/SAITVMD/index.m3u8?token=GTR"}, {"name": "Anbu TV", "url": "https://ipcloud.live/anbutv/anbutvhd/index.m3u8"}, {"name": "Nellai TV", "url": "https://stream.onecloudlive.in/nellaitv/nellaitv/index.m3u8"}, {"name": "SJ Surya TV", "url": "https://ipcloud.live/nellaitv/suriyatv/index.m3u8"}, {"name": "King 24x7", "url": "https://notvstream.in/kingtv/kingtv/index.m3u8"}, {"name": "Durai TV", "url": "https://ipcloud.live/duraitv/live/index.m3u8"}, {"name": "Durai TV [IPLive]", "url": "https://stream.iplive.xyz/hls/duraitv/index.m3u8"}, {"name": "Durai Melodies", "url": "https://stream.onecloudlive.in/duraitv/classic/index.m3u8"}, {"name": "Apple TV Nagercoil", "url": "https://play.applelive.in/appletv/appletv.m3u8"}, {"name": "Apple TV KLM", "url": "https://play.applelive.in/appletv/appletvklm.m3u8"}, {"name": "Apple TV Marthandam", "url": "https://web.applelive.in/stream/appletv/index.m3u8"}, {"name": "Jeyson TV", "url": "https://play.applelive.in/jeysontv/jeysontv.m3u8"}, {"name": "Kumari Kathir TV", "url": "https://play.applelive.in/jjmax/jjmax.m3u8"}, {"name": "Selfie TV", "url": "https://play.applelive.in/selfeetv/selfeetv.m3u8"}, {"name": "JC TV", "url": "https://play.applelive.in/jctv/jctv.m3u8"}, {"name": "Digital TV", "url": "https://play.applelive.in/digitaltv/digitaltv.m3u8"}, {"name": "NTV Trichy", "url": "https://notvstream.in/ntv/ntv/index.m3u8"}, {"name": "NTV Trichy [Cloud7]", "url": "https://stream.sscloud7.in/live/ntv/index.m3u8"}, {"name": "Arunai TV", "url": "https://notvstream.in/arunaitv/arunaitv/index.m3u8"}, {"name": "UTV Mayuram", "url": "https://notvstream.in/utv/utv/index.m3u8"}, {"name": "Thirumalai TV", "url": "https://notvstream.in/thirumalaitv/thirumalaitv/index.m3u8"}, {"name": "Subi TV", "url": "https://notvstream.in/subitv/subitv/index.m3u8"}, {"name": "Anandam TV", "url": "https://notvstream.in/anandamtv/anandamtv/index.m3u8"}, {"name": "Hitech TV", "url": "https://notvstream.in/hitechtv/hitechtv/index.m3u8"}, {"name": "Orange TV", "url": "https://notvstream.in/orangetv/orangetv/index.m3u8"}, {"name": "Leo TV", "url": "https://ipcloud.live/leotv/leotvhd/index.m3u8"}, {"name": "Leo TV [IPLive]", "url": "https://stream.iplive.xyz/hls/leotv/index.m3u8"}, {"name": "Aasai TV", "url": "https://notvstream.in/aasaitv/aasaitv/index.m3u8"}, {"name": "Rainbow TV Gandarvakottai", "url": "https://notvstream.in/rainbowtv/rainbowtv/index.m3u8"}, {"name": "Aalaya Magimai TV", "url": "https://stream.ashokadigital.net/aalayamagimaitv/aalayamagimaitv/index.m3u8"}, {"name": "Dheiveegam TV", "url": "https://stream.singamcloud.in/Dheiveegamtv/Dheiveegamtv/index.m3u8"}, {"name": "Amman TV", "url": "https://app.ashokadigital.net/app/78b1bc36/index.m3u8"}, {"name": "Oscar TV", "url": "https://account21.livebox.co.in/oscartvhls/live.m3u8"}, {"name": "Bright Simrose TV", "url": "https://notvstream.in/brightsimrosetv/brightsimrosetv/index.m3u8"}, {"name": "Jeiyan TV", "url": "https://stream.onecloudlive.in/jeyantv/jeyantv/index.m3u8"}, {"name": "Velan TV", "url": "https://cloudstream4k.com/velantvhdkanchi/bsk/playlist.m3u8"}, {"name": "JRP TV", "url": "https://ipcloud.live/jrptv/jrphd/index.m3u8"}, {"name": "Kavin TV", "url": "https://3.proxy.nellaiiptv.com/NOTV/KAVINTV/index.m3u8?token=GTR"}, {"name": "Santhiya TV", "url": "https://stream.onecloudlive.in/santhiyatv/santhiyatvhd/index.m3u8"}, {"name": "Anandam TV Madurai [TangoTV]", "url": "https://mumt07.tangotv.in/zHjX9OFlANANDAMTV/index.m3u8"}, {"name": "Anandam Abi TV", "url": "https://mumt07.tangotv.in/zHjX9OFlABITV/index.m3u8"}, {"name": "Anandam UTV", "url": "https://mumt07.tangotv.in/zHjX9OFlUTVANANDAM/index.m3u8"}, {"name": "Ragam TV", "url": "https://account26.livebox.co.in/RAGAMMTPhls/live.m3u8"}, {"name": "KCN TV", "url": "https://view.rcserver.in/tmp_hls12/kcntv/index.m3u8"}, {"name": "Thirumalai TV Vadipatti", "url": "https://ipcloud.live/thirumalaitv/madurai/index.m3u8"}, {"name": "SS TV Nagercoil", "url": "https://server.sscloud7.in/live/sshd/playlist.m3u8"}, {"name": "Jith TV", "url": "https://sscloud7.com/live/jithtv/index.m3u8"}, {"name": "Sky TV", "url": "https://sscloud7.com/live/skytv/index.m3u8"}, {"name": "Boys TV", "url": "https://rtmp.applelive.in/boystv/boystv/index.m3u8"}, {"name": "Maniway TV", "url": "https://live.singamcloud.in/bsctv/bsctv/index.m3u8"}, {"name": "King TV Alangulam", "url": "https://server.sscloud7.in/kingtv/kingtv/index.m3u8"}, {"name": "KM Television", "url": "https://stream.ashokadigital.net/KMTELEVISION/kmtelevision/index.m3u8?token=dHVsbml0X3N0ZWFsc19zaGl0"}, {"name": "Thirai TV [APServer]", "url": "https://view.apserver.in/tmp_hls2/thiraitv/index.m3u8"}, {"name": "Thirai Music", "url": "https://view.apserver.in/tmp_hls1/thiraitvplus/index.m3u8"}, {"name": "Thirai Music [APServer]", "url": "https://live.apcloud.in/thiraimusic/thiraimusichd/index.m3u8"}, {"name": "Bharathi Thirai Ulagam", "url": "https://bharathitv2-sscloud7-in.proxy.nellaiiptv.com/live/bharathithiraiulagam/index.m3u8"}, {"name": "CTN Conoor", "url": "https://rtmp.bmlive.net/ctn/ctntn/stream.m3u8"}, {"name": "Cuddalore Voice TV", "url": "https://stream.ashokadigital.net/voicetv/voicetvhd/index.m3u8"}, {"name": "Irattaipaathai TV", "url": "https://account31.livebox.co.in/IRATTAIPAATHAITVhls/live.m3u8"}, {"name": "Emperor TV", "url": "https://rtmp.bmlive.net/bms/emperortv/stream.m3u8"}, {"name": "Jayam TV Tenkasi", "url": "https://ipcloud.live/jayamtv/jayamtvhd/index.m3u8?token=jayamtv"}, {"name": "Jayam TV Namakkal", "url": "https://rtmp.bmlive.net/bms/jayamtv/stream.m3u8"}, {"name": "MCN Marthandam", "url": "https://play.applelive.in/mcntv/mcntv.m3u8"}, {"name": "STN TV", "url": "https://play.applelive.in/stntv/stntv.m3u8"}, {"name": "STN TV HD", "url": "https://play.applelive.in/stntv/stntvhd.m3u8"}, {"name": "Malligai TV", "url": "https://server.sscloud7.in/live/malligai/index.mpd"}, {"name": "Jai TV", "url": "https://play.applelive.in/jaitv/jaitv.m3u8"}, {"name": "King TV Ranipet", "url": "https://ipcloud.live/kingtv/kingtv/index.m3u8"}, {"name": "Yatra TV", "url": "https://stream.onecloudlive.in/yatra/yatratv/index.m3u8"}, {"name": "NRS Channel", "url": "https://notvstream.in/nrstv/nrstv/index.m3u8"}, {"name": "Garudan TV", "url": "https://play.applelive.in/hls/garudantv.m3u8"}, {"name": "Aarthi TV", "url": "https://3.proxy.nellaiiptv.com/NOTV/AARTHITV/index.m3u8?token=GTR"}, {"name": "Kanchi TV", "url": "https://3.proxy.nellaiiptv.com/NOTV/KANCHITV/index.m3u8?token=GTR"}, {"name": "Jenifer TV", "url": "https://live1.sscloud7.in/live/jenifertv/index.m3u8"}, {"name": "Raghul TV", "url": "https://live1.sscloud7.in/live/raghultv/index.m3u8"}, {"name": "Eesan TV", "url": "https://live.singamcloud.in/eesantv/eesantv/index.m3u8"}, {"name": "Vajra TV", "url": "https://app.ashokadigital.net/app/3b31be9f/index.m3u8"}, {"name": "Vajram TV", "url": "https://app.ashokadigital.net/app/68b001a0/index.m3u8"}, {"name": "Citi Channel", "url": "https://stream.ashokadigital.net/cititv/cititvhd/index.m3u8"}, {"name": "Hansitha TV", "url": "https://air.rojatv.cloud/hanshitha/tv/index.m3u8"}, {"name": "Manisha TV", "url": "https://stream.sscloud7.in/live/maishatv/index.m3u8"}, {"name": "Jeyam TV", "url": "https://live.sscloud7.in/live/jeyamtv/index.m3u8"}, {"name": "Ohm TV", "url": "https://live1.sscloud7.in/live/ohmtv/playlist.m3u8"}, {"name": "Dolphin TV", "url": "https://play.applelive.in/dolphintv/dolphintv.m3u8"}, {"name": "SNR TV", "url": "https://3.proxy.nellaiiptv.com/NOTV/ASOSACHENNAI/index.m3u8?token=GTR"}, {"name": "Chither TV", "url": "https://3.proxy.nellaiiptv.com/DINESH/PT2/index.m3u8?token=YAAL"}, {"name": "Siddhar Isai", "url": "https://3.proxy.nellaiiptv.com/DINESH/PT/index.m3u8?token=YAAL"}, {"name": "Appu TV", "url": "https://3.proxy.nellaiiptv.com/NOTV/IWORLDHD/index.m3u8?token=GTR"}, {"name": "Smart Sri", "url": "https://mumbai-edge.smartplaytv.in/smartsri/index.m3u8"}, {"name": "J Jeyam", "url": "https://stream.singamcloud.in/jjeyam/jjeyam/index.m3u8"}, {"name": "Jeyam Plus", "url": "https://stream.singamcloud.in/jeyamplus/jeyamplus/index.m3u8"}, {"name": "S Media", "url": "https://stream.onecloudlive.in/stv/stvhd/index.m3u8"}, {"name": "Raagam Friend's TV", "url": "https://stream.onecloudlive.in/raagamtv/raagamtvhd/index.m3u8"}, {"name": "Super TV", "url": "https://stream.onecloudlive.in/superstartv/superstarhd/index.m3u8"}, {"name": "KRN TV", "url": "https://stream.onecloudlive.in/krntv/krntvhd/index.m3u8"}, {"name": "Fort Channels", "url": "https://stream.onecloudlive.in/forttv/fortchannel/index.m3u8"}, {"name": "RV Tamil", "url": "https://ipcloud.live/rvtv/rvtvhd/index.m3u8"}, {"name": "Jeyam Plus", "url": "https://ipcloud.live/mmtv/jeyamplus/index.m3u8"}, {"name": "MM TV", "url": "https://ipcloud.live/mmtv/mmtvhd/index.m3u8"}, {"name": "SR Musix", "url": "https://srnet-bmlive-net.proxy.nellaiiptv.com/srmusic/myStream/playlist.m3u8"}, {"name": "Salaam TV", "url": "https://stream.onecloudlive.in/salamtv/salamtvhd/index.m3u8"}, {"name": "Mahimai TV", "url": "https://ktismaservers.in:3161/live/mahimaitvlive.m3u8"}, {"name": "Mahimai TV [IPTelevision]", "url": "https://mahimai.iptelevision.live/mahimaitv/video.m3u8"}, {"name": "Blood Of Jesus TV", "url": "https://live1.sscloud7.in/live/yovantv/playlist.m3u8"}, {"name": "Matha TV", "url": "https://live.mathatv.in/mathatv/mathatv/index.m3u8"}, {"name": "CRS TV", "url": "https://play.applelive.in/crstv/crstv.m3u8"}, {"name": "Joy Goodnews TV", "url": "https://play.applelive.in/joygoodnewstv/joygoodnewstv.m3u8"}, {"name": "Nanjil Natham TV", "url": "https://play.applelive.in/hls/nanjilnathamtv.m3u8"}, {"name": "Mariya Matha TV", "url": "https://play.applelive.in/mariyamathatv/mariyamathatv.m3u8"}, {"name": "Deva TV", "url": "https://play.applelive.in/devatv/devatv.m3u8"}, {"name": "Jesus TV", "url": "https://play.applelive.in/jesustv/jesustv.m3u8"}, {"name": "Praise TV", "url": "https://play.applelive.in/praisetv/praisetv.m3u8"}, {"name": "Sharon TV", "url": "https://sscloud7.com/live/sharontv/index.m3u8"}, {"name": "Vinmeen Music", "url": "https://vinmeentv.livebox.co.in/vinmeentvhls/live.m3u8"}, {"name": "Jeeva Oli TV", "url": "https://jaeppiyar.livebox.co.in/jeevaolitvhls/live.m3u8"}, {"name": "Nithya Velicham TV", "url": "https://play.applelive.in/nithyavelichamtv/nithyavelichamtv.m3u8"}, {"name": "JC TV", "url": "https://ipcloud.live/novamani/jctv/index.m3u8"}, {"name": "King Of Glory TV", "url": "https://ipcloud.live/novamani/kingofglorytv/index.m3u8"}, {"name": "Love Joy TV", "url": "https://ipcloud.live/novamani/lovejoytv/index.m3u8"}, {"name": "Win Vision TV", "url": "https://play.applelive.in/winvisiontv/winvisiontv.m3u8"}, {"name": "Shekinah TV", "url": "https://iptvhls.inet.moe/hls/newchannel_src/index.m3u8"}, {"name": "Cross TV", "url": "https://ytv.iptv.pics/hls/cross_src/index.m3u8"}, {"name": "G Max", "url": "https://play.applelive.in/gcv/gcv.m3u8"}, {"name": "Jeyam Television", "url": "https://jeyamtv.livebox.co.in/JeyamTelevisionhls/JeyamTelevision.m3u8"}, {"name": "PCN Channel", "url": "https://pcntv.wmsdigital.in/hls/gtv/stream.m3u8"}, {"name": "Top TV Thuraiyur", "url": "https://stream.onecloudlive.in/toptv/toptvhd/index.m3u8"}, {"name": "Jay TV", "url": "https://stream.onecloudlive.in/jaytv/jaytvhd/index.m3u8"}, {"name": "Annai TV", "url": "https://annainew.livebox.co.in/annailivehls/live.m3u8"}, {"name": "7Star Television", "url": "https://annainew.livebox.co.in/7startvhls/livestream.m3u8"}, {"name": "Amma TV", "url": "https://annainew.livebox.co.in/ammatvhls/live.m3u8"}, {"name": "Sri Sai TV", "url": "https://annainew.livebox.co.in/srisaihls/live.m3u8"}, {"name": "Isai Saral", "url": "https://srnet-bmlive-net.proxy.nellaiiptv.com/isaisaral/mystream/playlist.m3u8"}, {"name": "Kanchi Media", "url": "https://3.proxy.nellaiiptv.com/NOTV/KANCHIMEDIA/index.m3u8?token=GTR"}, {"name": "AVS TV", "url": "https://play.applelive.in/avstv/avstv.m3u8"}, {"name": "Global TV", "url": "https://play.applelive.in/globaltv/globaltv.m3u8"}, {"name": "Ayya Agilathirattu TV", "url": "https://live1.sscloud7.in/live/ayyatv/playlist.m3u8"}, {"name": "Analai Express", "url": "https://3.proxy.nellaiiptv.com/ANALAI_MOVIE/index.m3u8?token=GTR"}, {"name": "Analai Express Cinema", "url": "https://3.proxy.nellaiiptv.com/MONTAMIL_CINEMA/index.m3u8?token=GTR"}, {"name": "Makkalpani TV", "url": "https://play.applelive.in/mapatv/mapatv.m3u8"}, {"name": "Mariya Annai TV", "url": "https://play.applelive.in/mariyaannaitv/mariyaannaitv.m3u8"}, {"name": "Gospel TV", "url": "https://play.applelive.in/gospeltv/gospeltv.m3u8"}, {"name": "Jesus Alive Television", "url": "https://play.applelive.in/jesusalivetv/jesusalivetv.m3u8"}, {"name": "Royal TV", "url": "https://play.applelive.in/royaltv/royaltv.m3u8"}, {"name": "Ayya TV", "url": "https://play.applelive.in/ayyatv/ayyatv.m3u8"}, {"name": "Subash TV Tenkasi [Cloud7]", "url": "https://server.sscloud7.in/live/subashhd/index.m3u8"}, {"name": "Surya TV", "url": "https://surya.suriyantv.in/hls/app/index.m3u8"}, {"name": "Pasamalar TV", "url": "https://stream.sscloud7.in/live/paasamalartv/index.m3u8"}, {"name": "Vimal TV", "url": "https://stream.onecloudlive.in/karthick/vimaltv/index.m3u8"}, {"name": "Deiveega Oli TV", "url": "https://stream.onecloudlive.in/karthick/deivegaolitv/index.m3u8"}, {"name": "Selva Tamil TV", "url": "https://stream.sscloud7.in/live/selvatamiltv/index.mpd"}, {"name": "Super TV Dindigul [RojaTV]", "url": "https://stream.rojatv.cloud/super/tv/index.m3u8"}, {"name": "Ark TV", "url": "https://ark.inet.moe/ark/index.m3u8"}, {"name": "Ark TV [Ktisma]", "url": "https://ktismaservers.in:3917/live/arktvlive.m3u8"}, {"name": "ACN TV", "url": "https://web.applelive.in/stream/acntv/index.m3u8"}, {"name": "Anjai TV", "url": "https://web.applelive.in/stream/anjaitv/index.m3u8"}, {"name": "Ruhasha TV", "url": "https://live.applelive.in/ruhashatv/ruhashatv.m3u8"}, {"name": "Ezhil TV", "url": "https://stream.onecloudlive.in/ezhiltv/ezhilhd/index.m3u8"}, {"name": "Crayonz TV", "url": "https://sanplayout.xyz/live2/crayonztv/index.m3u8"}, {"name": "Sahara TV", "url": "https://ipcloud.live/saharatv/saharatvhd/index.m3u8"}, {"name": "Tamil Pirai TV", "url": "https://kayal.inet.moe/kayal/kayaltv/index.m3u8"}, {"name": "Islamic Channel", "url": "https://play.applelive.in/islamicchannel/islamicchannel.m3u8"}, {"name": "Sharon TV", "url": "https://rtmp.bmlive.net/bms/sharontv/index.m3u8"}, {"name": "Arputhar Yesu TV", "url": "https://arputharyesutv.arputharyesutv.com/live/md/index.m3u8"}, {"name": "Arputhar Yesu TV [Livebox]", "url": "https://account33.livebox.co.in/jesushelpshls/live.m3u8"}, {"name": "Fox TV", "url": "https://stream.onecloudlive.in/foxtv/foxtv/index.m3u8"}, {"name": "Sri Arjun TV", "url": "https://stream.onecloudlive.in/sriarjuntv/sriarjun/index.m3u8"}, {"name": "Arasu TV", "url": "https://ipcloud.live/ctn/arasu/index.m3u8"}, {"name": "Tamil TV", "url": "https://ktismaservers.in:3220/hybrid/play.m3u8"}, {"name": "Family Channel", "url": "https://2-fss-2.streamhoster.com/pl_118/203324-1410936-1/chunklist.m3u8"}, {"name": "Life TV", "url": "https://lifetv.livebox.co.in/lifetvhls/lifetv.m3u8"}, {"name": "News 80 Tamil", "url": "https://3.proxy.nellaiiptv.com/NOTV/NEWS80/index.m3u8?token=GTR"}, {"name": "We Baduga TV", "url": "https://rtmp.bmlive.net/webaduga/webaduga/index.m3u8"}, {"name": "Manasu TV", "url": "https://stream6.livebox.co.in/manasutvhls/live.m3u8"}, {"name": "Madura TV", "url": "https://stream.onecloudlive.in/mm/maduratv/index.m3u8"}, {"name": "Star Media", "url": "https://rtmp.notvstream.in/starmedia/starmedia/index.m3u8"}, {"name": "Blue Moon TV", "url": "https://rtmp.bmlive.net/bms/bmtv/stream.m3u8"}, {"name": "Mathan TV", "url": "https://ipcloud.live/mathantv/mathantv/index.mpd"}, {"name": "R Plus TV", "url": "https://rtmp.applelive.in/rplus/rplus/index.m3u8"}, {"name": "City TV", "url": "https://stream.onecloudlive.in/citytv/citytv/index.m3u8"}, {"name": "TTN TV", "url": "https://web.applelive.in/stream/ttntv/index.m3u8"}, {"name": "Omm TV Nagercoil", "url": "https://web.applelive.in/ommtv/ommtv/index.m3u8"}, {"name": "Amma TV Nagercoil", "url": "https://web.applelive.in/stream/ammatv/index.m3u8"}, {"name": "SR TV", "url": "https://web.applelive.in/stream/srtv/index.m3u8"}, {"name": "Kanna TV", "url": "https://web.applelive.in/stream/kktv/index.m3u8"}, {"name": "A1 TV Ariyalur", "url": "https://app.ashokadigital.net/app/0fca457c/index.m3u8"}, {"name": "S TV", "url": "https://apis.avmediawork.in/tvhls/stv.m3u8"}, {"name": "Royal TV Guduvancheri", "url": "https://cloudstream4k.com/jptvhd/bsk/playlist.m3u8"}, {"name": "ATN [RojaTV]", "url": "https://stream.rojatv.cloud/ATNHD/onecloud/index.m3u8"}, {"name": "Lucky TV", "url": "https://live3.onecloudlive.in/luckytv/luckytvhd/index.m3u8"}, {"name": "V Tamil", "url": "https://3.proxy.nellaiiptv.com/NOTV/VTV1/index.m3u8?token=GTR"}, {"name": "V Tamil [OliDigital]", "url": "https://hlsstream.olidigital.in/vtv/vtv/index.m3u8"}, {"name": "V Tamil [VK Digital]", "url": "https://real-vk.proxy.nellaiiptv.com/VTV/index.m3u8"}, {"name": "Bhairava TV", "url": "https://stream.onecloudlive.in/bhairavatv/bhairavahd/index.m3u8"}, {"name": "Joy TV HD", "url": "https://ktismaservers.in:3412/live/joytvlive.m3u8"}, {"name": "Arighni TV", "url": "https://dmtv.iptv.pics/live/dmtv/index.m3u8"}, {"name": "Tamil Vision International", "url": "https://live.cmr24.fm/TVI/HD/playlist.m3u8"}, {"name": "Sooriyan TV", "url": "https://live20.bozztv.com/giatv/giatv-Infinittyott/Infinittyott/playlist.m3u8"}, {"name": "Sooriyan TV Cinema", "url": "https://live20.bozztv.com/giatv/giatv-Sooriyantv/Sooriyantv/playlist.m3u8"}, {"name": "Uthamiyae TV", "url": "https://kali.vdopanel.com:3169/stream/play.m3u8"}, {"name": "Samugam Media", "url": "https://ca.streamjo.com/live/samugam.m3u8"}, {"name": "EET TV", "url": "https://eu.streamjo.com/eetlive/eettv.m3u8"}, {"name": "ME24 Tamil", "url": "https://stream.onecloudlive.in/orange/ME24TAMIL/index.m3u8"}, {"name": "Meiveli TV", "url": "https://meiveli.livebox.co.in/MEIVELIMAINhls/meivelimain.m3u8"}, {"name": "TWOC TV", "url": "https://rtmp.applelive.in/twoctv/twoctv/index.m3u8"}, {"name": "Imai TV", "url": "https://live20.bozztv.com/akamaissh101/ssh101/imaitv/playlist.m3u8"}, {"name": "Salvation TV", "url": "https://ktismaservers.in:3902/live/salvationtvlive.m3u8"}, {"name": "My Faith TV", "url": "https://stream.iplive.xyz/faithtv/faithtv/index.m3u8"}, {"name": "Adhisayam TV", "url": "https://livetv.adhisayamtv.org/adhisayamtv/83a062a18a761b948a73ad2ba7747a8f.sdp/playlist.m3u8"}, {"name": "Thangam TV", "url": "https://stream.onecloudlive.in/thangamtv/thangamtvhd/index.m3u8"}, {"name": "Good News Time", "url": "https://5dd3981940faa.streamlock.net/goodnewstime/goodnewstime/playlist.m3u8"}, {"name": "Kathir TV", "url": "https://stream.ipcloud.live/kathirtvhd/livestream/index.m3u8"}, {"name": "PG TV", "url": "https://app.xstream.onecloudlive.in/pgtv/pgtvhd/index.m3u8"}, {"name": "Prime Music", "url": "https://live.primestream.in/prime/music/index.m3u8"}, {"name": "Shakthi Channel", "url": "https://cloudstream4k.com/shakthihd/bsk/playlist.m3u8"}, {"name": "Pothigai Prime", "url": "https://view.apserver.in/tmp_hls5/pothigaiprime/index.m3u8"}, {"name": "Idhayam TV", "url": "https://sanplayout.xyz/live2/idhayamtv/index.m3u8"}, {"name": "Idhayam Kids", "url": "https://sanplayout.xyz/live2/idhayamkidz/index.m3u8"}, {"name": "A1 Media News", "url": "https://sanplayout.xyz/live2/a1medianews/index.m3u8"}, {"name": "Jeevaneerodai TV", "url": "https://web.applelive.in/jeevaneerodaitv/jeevaneerodaitv/index.m3u8"}, {"name": "My Jesus TV", "url": "https://5790d294af2dc.streamlock.net/myjesustv/myjesustv/playlist.m3u8"}, {"name": "Bible TV", "url": "https://account33.livebox.co.in/bibletvhls/live.m3u8"}, {"name": "Heaven TV", "url": "https://heaventv.livebox.co.in/heaventvhls/live.m3u8"}, {"name": "Chittoor TV", "url": "https://server.streamwell.in/hls/chittoortvhd.m3u8"}, {"name": "Channel 316", "url": "https://channel316.livebox.co.in/c316hls/live.m3u8"}, {"name": "Grace TV", "url": "https://gracetvcgl.livebox.co.in/Gracetvhls/Gracetv.m3u8"}, {"name": "Aathi TV", "url": "https://5790d294af2dc.streamlock.net/aathitv/aathitv/playlist.m3u8"}, {"name": "TNSE", "url": "https://5790d294af2dc.streamlock.net/mchanneltv24/mchanneltv24/playlist.m3u8"}, {"name": "Chola TV", "url": "https://hlsstream.olidigital.in/cholatv/cholatv/index.m3u8?token=dHVsbml0X3N0ZWFsc19zaGl0"}, {"name": "Retro Music", "url": "https://sanplayout.xyz/live2/retromusichd/playlist.m3u8"}, {"name": "Madurai Arasi TV", "url": "https://app.xstream.onecloudlive.in/maduraiarasi/livestream/index.m3u8"}, {"name": "NRJ TV", "url": "https://3.proxy.nellaiiptv.com/DINESH/NRJTV/index.m3u8?token=YAAL"}, {"name": "PJ TV", "url": "https://3.proxy.nellaiiptv.com/DINESH/PJTV/index.m3u8?token=YAAL"}, {"name": "Eye Tamil", "url": "https://2.proxy.nellaiiptv.com/EyeMedia/EyeTV/index.m3u8"}, {"name": "Eye Tamil Music", "url": "https://2.proxy.nellaiiptv.com/EyeMedia/music/index.m3u8"}, {"name": "Eye Tamil Comedy", "url": "https://2.proxy.nellaiiptv.com/EyeMedia/comedy/index.m3u8"}, {"name": "Duresh TV", "url": "https://real-vk.proxy.nellaiiptv.com/PDPTV/index.m3u8"}, {"name": "Sri Varahi TV", "url": "https://real-vk.proxy.nellaiiptv.com/SRIVARAHITV/index.m3u8"}, {"name": "Telemax Tamil", "url": "https://real-vk.proxy.nellaiiptv.com/TELEMAX/index.m3u8"}, {"name": "Sri Vinayaga TV", "url": "https://1.proxy.nellaiiptv.com/srivinayagatv/hd/index.m3u8"}, {"name": "Sri Vinayaga어요", "url": "https://1.proxy.nellaiiptv.com/srivinayagatv/movies/index.m3u8"}, {"name": "Sri Vinayaga Hollywood", "url": "https://1.proxy.nellaiiptv.com/srivinayagatv/hollywood/playlist.m3u8"}, {"name": "PN TV", "url": "https://stream.onecloudlive.in/pntv/pntv/index.m3u8"}, {"name": "Sun Smart TV [VK Digital]", "url": "https://real-vk.proxy.nellaiiptv.com/SUNSMARTTV/index.m3u8"}, {"name": "SD Media (No Signal)", "url": "https://real-vk.proxy.nellaiiptv.com/SDMEDIA/index.m3u8"}, {"name": "Krish TV", "url": "https://stream.onecloudlive.in/krishnatv/krishnatvhd/index.m3u8"}, {"name": "Thoma TV", "url": "https://stream.onecloudlive.in/thoma/thoma/index.m3u8"}, {"name": "Sakthi TV", "url": "https://real-vk.proxy.nellaiiptv.com/SAKTHITV/index.m3u8"}, {"name": "Lucky TV Tenkasi", "url": "https://live.onecloudlive.in/luckytvtk/luckytv/index.m3u8"}, {"name": "Vaagai TV", "url": "https://stream.ashokadigital.net/VAAGAITV/vaagaitv/index.m3u8"}, {"name": "MTN TV", "url": "https://rtmp.applelive.in/mtntv/mtntv/index.m3u8"}, {"name": "Kirubai TV", "url": "https://live.sscloud7.in/live/kirubaitv/index.m3u8"}, {"name": "Thogai TV", "url": "https://thogaitv.stream.onecloudlive.in/thogaitv/12345678/index.m3u8"}];
 
+        const video = document.getElementById('videoPlayer');
+        const channelListEl = document.getElementById('channelList');
+        const currentChannelNameEl = document.getElementById('currentChannelName');
+        const currentProgramTimeEl = document.getElementById('currentProgramTime');
+        
+        let hls = null;
 
+        function renderChannels() {
+            channelListEl.innerHTML = '';
+            channels.forEach((channel, index) => {
+                const row = document.createElement('div');
+                row.className = 'channel-row';
+                if (index === 0) row.classList.add('active');
+                
+                row.innerHTML = `
+                    <div class="channel-badge-box">
+                        <span class="channel-name">${channel.name}</span>
+                    </div>
+                    <div class="channel-program-info">
+                        <div class="prog-title">${channel.name} Live Broadcast</div>
+                        <div class="prog-time">Live • 24/7 Streaming</div>
+                        <div class="prog-progress">
+                            <div class="prog-progress-bar"></div>
+                        </div>
+                    </div>
+                `;
 
-<script>
-const channels = [{"name":"Sana TV [OTTLive]","url":"https://stream.ottlive.co.in/sanatv/index.m3u8"},{"name":"Sana Plus [OTTLive]","url":"https://stream.ottlive.co.in/sanaplus/index.m3u8"},{"name":"NTC TV","url":"https://galaxyott.live/hls/ntv.m3u8"},{"name":"Ultimate TV [OTTLive]","url":"https://stream.ottlive.co.in/utvtamil/index.m3u8"},{"name":"Anandham TV","url":"https://server.sscloud7.in/live/anandhamtv/index.mpd"},{"name":"Suriya TV","url":"https://galaxyott.live/hls/suryatv.m3u8"},{"name":"Subin TV [OTTLive]","url":"https://stream.ottlive.co.in/subintvtamil/index.m3u8"},{"name":"Dharsan TV","url":"https://galaxyott.live/hls/dharshantv.m3u8"},{"name":"Rock TV [OTTLive]","url":"https://stream.ottlive.co.in/suriyantvtamil/index.m3u8"},{"name":"Aaryaa TV","url":"https://stream.ottlive.co.in/aryatvtamil/index.m3u8"},{"name":"Roja TV","url":"https://rojatv.cloud/rojatv/rojatv/index.m3u8"},{"name":"Roja Movies","url":"https://stream.rojatv.cloud/rojatv/rojatv/index.m3u8"},{"name":"Nijam TV","url":"https://nijamtv.nijamtv.org/live/nijamtv/index.m3u8"},{"name":"KC TV","url":"https://rtmp.bmlive.net/bms/kctv/stream.m3u8"},{"name":"KC Music","url":"https://rtmp.bmlive.net/bms/kcmusic/index.m3u8"},{"name":"Om Sakthi TV","url":"https://live1.sscloud7.com/live/omsakthitv/index.mpd"},{"name":"Oli TV","url":"https://live.olidigital.in/olitv/olitv/index.m3u8"},{"name":"Time TV","url":"https://live.olidigital.in/timetv/timetv/index.m3u8"},{"name":"Moon TV","url":"https://live.sscloud7.in/live/moontv/index.m3u8"},{"name":"NTN TV","url":"https://live.skystream.in/live/ntntv/index.m3u8"},{"name":"Kumari TV","url":"https://play.applelive.in/kumaritv/gvkumaritv.m3u8"},{"name":"Sakthi TV","url":"https://live.sscloud7.in/live/sakthitv/index.m3u8"},{"name":"Prime TV","url":"https://live.applelive.in/primetv/primetv/index.m3u8"},{"name":"Dtv","url":"https://stream.d6-pro.com/Dtv/live/index.m3u8"},{"name":"Dbhakthi","url":"https://stream.d6-pro.com/Dbhakhi/live/index.m3u8"},{"name":"Tharun Movies","url":"https://streaming.livebox.co.in/tharunmovieshls/live.m3u8"},{"name":"MN TV","url":"https://mntv.livebox.co.in/mntvhls/live.m3u8"},{"name":"GEM TV","url":"https://gemtv.circle7stream.com/gem/fcce47a8559e30755582c396ce7fce9e.sdp/playlist.m3u8"},{"name":"YET TV","url":"https://live.yettelevision.com:5443/LiveApp/streams/yettv.m3u8"},{"name":"YET Max","url":"https://sstudiostv.stream.onecloudlive.in/sstudiostv/yettv2/index.m3u8"},{"name":"Succes TV Tamil","url":"https://stream.onecloudlive.in/successtv/successtvhd/index.m3u8"},{"name":"Riya TV","url":"https://play.applelive.in/riyatv/riyatv.m3u8"},{"name":"Dark Television","url":"https://play.applelive.in/darktv/darktv.m3u8"},{"name":"Harin TV","url":"https://ipcloud.live/harintv/harintvhd/index.m3u8"},{"name":"Nila TV Pannur","url":"https://live.olidigital.in/nilatv/nilatv/index.m3u8"},{"name":"Sky Plus TV","url":"https://ipcloud.live/skytv/skytv/index.m3u8"},{"name":"Deavathai TV","url":"https://ipcloud.live/devadhaitv/devadhaitv/index.m3u8"},{"name":"APS TV Gold","url":"https://apsgold-a1.tamilstream.in/apsgold/apsgold/index.m3u8"},{"name":"Senthamil TV","url":"https://view.rcserver.in/tmp_hls16/senthamiltv/index.m3u8"},{"name":"Sailam TV","url":"https://stream.onecloudlive.in/sailamtv/sailamtv/index.m3u8"},{"name":"Sha TV","url":"https://play.applelive.in/shatv/shatv.m3u8"},{"name":"Mullai TV","url":"https://ipcloud.live/mullaitv/mullaitv/index.m3u8"},{"name":"Sakthi TV Nellai","url":"https://stream.onecloudlive.in/sachintv/sakthitv/index.m3u8"},{"name":"Sarvik TV","url":"https://live3.onecloudlive.in/sachintv/sarvikhd/index.mpd"},{"name":"Queens 143","url":"https://notvstream.in/queens/queens/index.m3u8"},{"name":"Thendral TV Madurai","url":"https://w6oy7zkpdxrg-hls-live.5centscdn.com/THENDRALHD/aac0b08f91370cd39f61343d2b6e8069.sdp/playlist.m3u8"},{"name":"Namma Gobi TV","url":"https://cdn1.rojatv.cloud/nammagobi/tv/index.m3u8"},{"name":"Aadhavan Colours [APServer]","url":"https://view.apserver.in/tmp_hls4/aadhavancolours/index.m3u8"},{"name":"MSN TV","url":"https://ipcloud.live/msntv/msntv/index.m3u8"},{"name":"Ezra Bible Network","url":"https://stream.onecloudlive.in/riotv/riotvmax/index.m3u8"},{"name":"Veerali TV","url":"https://ipcloud.live/veerali/veeralitv/index.m3u8"},{"name":"King TV","url":"https://rtmp.bmlive.net/kingtv/kingtv/stream.m3u8"},{"name":"3 Star TV","url":"https://stream.onecloudlive.in/threestartv/threestarhd/index.mpd"},{"name":"Shalini TV Tiruvannamalai","url":"https://ipcloud.live/shalinitv/shalinitv/index.m3u8"},{"name":"Hai TV","url":"https://play.applelive.in/stv/stv.m3u8"},{"name":"JJ News Tamil","url":"https://hlsstream.olidigital.in/jjtvnewstamil/jjtvnewstamil/index.m3u8"},{"name":"Channel Spice","url":"https://stream.onecloudlive.in/spicetv/spicetv/index.m3u8"},{"name":"Urchagam TV","url":"https://rtmp.bmlive.net/bms/urchagamtv/stream.m3u8"},{"name":"Jeeva TV","url":"https://cdn1.rojatv.cloud/kumaran/tv/index.m3u8"},{"name":"Thendral TV","url":"https://hls.thendraltv.in/thendraltv_1210b43d/index.m3u8"},{"name":"Ganesh TV","url":"https://hls.thendraltv.in/ganeshtv_ade49abb/index.m3u8"},{"name":"Eagle TV Namakkal","url":"https://rtmp.bmlive.net/bms/eagletv/stream.m3u8"},{"name":"Mathi TV","url":"https://notvstream.in/mathitv/mathitv/index.m3u8"},{"name":"Rainbow TV","url":"https://live.cloudvu.in/rainbowtv/ssdslive/playlist.m3u8"},{"name":"Sai TV Madurai [NOTV]","url":"https://3.proxy.nellaiiptv.com/NOTV/SAITVMD/index.m3u8?token=GTR"},{"name":"Anbu TV","url":"https://ipcloud.live/anbutv/anbutvhd/index.m3u8"},{"name":"Nellai TV","url":"https://stream.onecloudlive.in/nellaitv/nellaitv/index.m3u8"},{"name":"SJ Surya TV","url":"https://ipcloud.live/nellaitv/suriyatv/index.m3u8"},{"name":"King 24x7","url":"https://notvstream.in/kingtv/kingtv/index.m3u8"},{"name":"Durai TV","url":"https://ipcloud.live/duraitv/live/index.m3u8"},{"name":"Durai Melodies","url":"https://stream.onecloudlive.in/duraitv/classic/index.m3u8"},{"name":"Apple TV Nagercoil","url":"https://play.applelive.in/appletv/appletv.m3u8"},{"name":"Apple TV KLM","url":"https://play.applelive.in/appletv/appletvklm.m3u8"},{"name":"Apple TV Marthandam","url":"https://web.applelive.in/stream/appletv/index.m3u8"},{"name":"Jeyson TV","url":"https://play.applelive.in/jeysontv/jeysontv.m3u8"},{"name":"Kumari Kathir TV","url":"https://play.applelive.in/jjmax/jjmax.m3u8"},{"name":"Selfie TV","url":"https://play.applelive.in/selfeetv/selfeetv.m3u8"},{"name":"JC TV","url":"https://play.applelive.in/jctv/jctv.m3u8"},{"name":"Digital TV","url":"https://play.applelive.in/digitaltv/digitaltv.m3u8"},{"name":"NTV Trichy","url":"https://notvstream.in/ntv/ntv/index.m3u8"},{"name":"Arunai TV","url":"https://notvstream.in/arunaitv/arunaitv/index.m3u8"},{"name":"UTV Mayuram","url":"https://notvstream.in/utv/utv/index.m3u8"},{"name":"Thirumalai TV","url":"https://notvstream.in/thirumalaitv/thirumalaitv/index.m3u8"},{"name":"Subi TV","url":"https://notvstream.in/subitv/subitv/index.m3u8"},{"name":"Anandam TV","url":"https://notvstream.in/anandamtv/anandamtv/index.m3u8"},{"name":"Hitech TV","url":"https://notvstream.in/hitechtv/hitechtv/index.m3u8"},{"name":"Orange TV","url":"https://notvstream.in/orangetv/orangetv/index.m3u8"},{"name":"Leo TV","url":"https://ipcloud.live/leotv/leotvhd/index.m3u8"},{"name":"Leo TV [IPLive]","url":"https://stream.iplive.xyz/hls/leotv/index.m3u8"},{"name":"Aasai TV","url":"https://notvstream.in/aasaitv/aasaitv/index.m3u8"},{"name":"Rainbow TV Gandarvakottai","url":"https://notvstream.in/rainbowtv/rainbowtv/index.m3u8"},{"name":"Aalaya Magimai TV","url":"https://stream.ashokadigital.net/aalayamagimaitv/aalayamagimaitv/index.m3u8"},{"name":"Dheiveegam TV","url":"https://stream.singamcloud.in/Dheiveegamtv/Dheiveegamtv/index.m3u8"},{"name":"Amman TV","url":"https://app.ashokadigital.net/app/78b1bc36/index.m3u8"},{"name":"Oscar TV","url":"https://account21.livebox.co.in/oscartvhls/live.m3u8"},{"name":"Bright Simrose TV","url":"https://notvstream.in/brightsimrosetv/brightsimrosetv/index.m3u8"},{"name":"Jeiyan TV","url":"https://stream.onecloudlive.in/jeyantv/jeyantv/index.m3u8"},{"name":"Velan TV","url":"https://cloudstream4k.com/velantvhdkanchi/bsk/playlist.m3u8"},{"name":"JRP TV","url":"https://ipcloud.live/jrptv/jrphd/index.m3u8"},{"name":"Kavin TV","url":"https://3.proxy.nellaiiptv.com/NOTV/KAVINTV/index.m3u8?token=GTR"},{"name":"Santhiya TV","url":"https://stream.onecloudlive.in/santhiyatv/santhiyatvhd/index.m3u8"},{"name":"Anandam TV Madurai [TangoTV]","url":"https://mumt07.tangotv.in/zHjX9OFlANANDAMTV/index.m3u8"},{"name":"Anandam Abi TV","url":"https://mumt07.tangotv.in/zHjX9OFlABITV/index.m3u8"},{"name":"Anandam UTV","url":"https://mumt07.tangotv.in/zHjX9OFlUTVANANDAM/index.m3u8"},{"name":"Ragam TV","url":"https://account26.livebox.co.in/RAGAMMTPhls/live.m3u8"},{"name":"KCN TV","url":"https://view.rcserver.in/tmp_hls12/kcntv/index.m3u8"},{"name":"Thirumalai TV Vadipatti","url":"https://ipcloud.live/thirumalaitv/madurai/index.m3u8"},{"name":"SS TV Nagercoil","url":"https://server.sscloud7.in/live/sshd/playlist.m3u8"},{"name":"Jith TV","url":"https://sscloud7.com/live/jithtv/index.m3u8"},{"name":"Sky TV","url":"https://sscloud7.com/live/skytv/index.m3u8"},{"name":"Boys TV","url":"https://rtmp.applelive.in/boystv/boystv/index.m3u8"},{"name":"Maniway TV","url":"https://live.singamcloud.in/bsctv/bsctv/index.m3u8"},{"name":"King TV Alangulam","url":"https://server.sscloud7.in/kingtv/kingtv/index.m3u8"},{"name":"KM Television","url":"https://stream.ashokadigital.net/KMTELEVISION/kmtelevision/index.m3u8?token=dHVsbml0aXNhZHVtZHVt"},{"name":"Thirai TV [APServer]","url":"https://view.apserver.in/tmp_hls2/thiraitv/index.m3u8"},{"name":"Thirai Music","url":"https://view.apserver.in/tmp_hls1/thiraitvplus/index.m3u8"},{"name":"Thirai Music [APServer]","url":"https://live.apcloud.in/thiraimusic/thiraimusichd/index.m3u8"},{"name":"Bharathi Thirai Ulagam","url":"https://bharathitv2-sscloud7-in.proxy.nellaiiptv.com/live/bharathithiraiulagam/index.m3u8"},{"name":"CTN Conoor","url":"https://rtmp.bmlive.net/ctn/ctntn/stream.m3u8"},{"name":"Cuddalore Voice TV","url":"https://stream.ashokadigital.net/voicetv/voicetvhd/index.m3u8"},{"name":"Irattaipaathai TV","url":"https://account31.livebox.co.in/IRATTAIPAATHAITVhls/live.m3u8"},{"name":"Emperor TV","url":"https://rtmp.bmlive.net/bms/emperortv/stream.m3u8"},{"name":"Jayam TV Tenkasi","url":"https://ipcloud.live/jayamtv/jayamtvhd/index.m3u8?token=jayamtv"},{"name":"Jayam TV Namakkal","url":"https://rtmp.bmlive.net/bms/jayamtv/stream.m3u8"},{"name":"MCN Marthandam","url":"https://play.applelive.in/mcntv/mcntv.m3u8"},{"name":"STN TV","url":"https://play.applelive.in/stntv/stntv.m3u8"},{"name":"STN TV HD","url":"https://play.applelive.in/stntv/stntvhd.m3u8"},{"name":"Malligai TV","url":"https://server.sscloud7.in/live/malligai/index.mpd"},{"name":"Jai TV","url":"https://play.applelive.in/jaitv/jaitv.m3u8"},{"name":"King TV Ranipet","url":"https://ipcloud.live/kingtv/kingtv/index.m3u8"},{"name":"Yatra TV","url":"https://stream.onecloudlive.in/yatra/yatratv/index.m3u8"},{"name":"NRS Channel","url":"https://notvstream.in/nrstv/nrstv/index.m3u8"},{"name":"Garudan TV","url":"https://play.applelive.in/hls/garudantv.m3u8"},{"name":"Aarthi TV","url":"https://3.proxy.nellaiiptv.com/NOTV/AARTHITV/index.m3u8?token=GTR"},{"name":"Kanchi TV","url":"https://3.proxy.nellaiiptv.com/NOTV/KANCHITV/index.m3u8?token=GTR"},{"name":"Jenifer TV","url":"https://live1.sscloud7.in/live/jenifertv/index.m3u8"},{"name":"Raghul TV","url":"https://live1.sscloud7.in/live/raghultv/index.m3u8"},{"name":"Eesan TV","url":"https://live.singamcloud.in/eesantv/eesantv/index.m3u8"},{"name":"Vajra TV","url":"https://app.ashokadigital.net/app/3b31be9f/index.m3u8"},{"name":"Vajram TV","url":"https://app.ashokadigital.net/app/68b001a0/index.m3u8"},{"name":"Citi Channel","url":"https://stream.ashokadigital.net/cititv/cititvhd/index.m3u8"},{"name":"Hansitha TV","url":"https://air.rojatv.cloud/hanshitha/tv/index.m3u8"},{"name":"Manisha TV","url":"https://stream.sscloud7.in/live/maishatv/index.m3u8"},{"name":"Jeyam TV","url":"https://live.sscloud7.in/live/jeyamtv/index.m3u8"},{"name":"Ohm TV","url":"https://live1.sscloud7.in/live/ohmtv/playlist.m3u8"},{"name":"Dolphin TV","url":"https://play.applelive.in/dolphintv/dolphintv.m3u8"},{"name":"SNR TV","url":"https://3.proxy.nellaiiptv.com/NOTV/ASOSACHENNAI/index.m3u8?token=GTR"},{"name":"Chither TV","url":"https://3.proxy.nellaiiptv.com/DINESH/PT2/index.m3u8?token=YAAL"},{"name":"Siddhar Isai","url":"https://3.proxy.nellaiiptv.com/DINESH/PT/index.m3u8?token=YAAL"},{"name":"Appu TV","url":"https://3.proxy.nellaiiptv.com/NOTV/IWORLDHD/index.m3u8?token=GTR"},{"name":"Smart Sri","url":"https://mumbai-edge.smartplaytv.in/smartsri/index.m3u8"},{"name":"J Jeyam","url":"https://stream.singamcloud.in/jjeyam/jjeyam/index.m3u8"},{"name":"Jeyam Plus","url":"https://stream.singamcloud.in/jeyamplus/jeyamplus/index.m3u8"},{"name":"S Media","url":"https://stream.onecloudlive.in/stv/stvhd/index.m3u8"},{"name":"Raagam Friend's TV","url":"https://stream.onecloudlive.in/raagamtv/raagamtvhd/index.m3u8"},{"name":"Super TV","url":"https://stream.onecloudlive.in/superstartv/superstarhd/index.m3u8"},{"name":"KRN TV","url":"https://stream.onecloudlive.in/krntv/krntvhd/index.m3u8"},{"name":"Fort Channels","url":"https://stream.onecloudlive.in/forttv/fortchannel/index.m3u8"},{"name":"RV Tamil","url":"https://ipcloud.live/rvtv/rvtvhd/index.m3u8"},{"name":"Jeyam Plus","url":"https://ipcloud.live/mmtv/jeyamplus/index.m3u8"},{"name":"MM TV","url":"https://ipcloud.live/mmtv/mmtvhd/index.m3u8"},{"name":"SR Musix","url":"https://srnet-bmlive-net.proxy.nellaiiptv.com/srmusic/myStream/playlist.m3u8"},{"name":"Salaam TV","url":"https://stream.onecloudlive.in/salamtv/salamtvhd/index.m3u8"},{"name":"Mahimai TV","url":"https://ktismaservers.in:3161/live/mahimaitvlive.m3u8"},{"name":"Mahimai TV [IPTelevision]","url":"https://mahimai.iptelevision.live/mahimaitv/video.m3u8"},{"name":"Blood Of Jesus TV","url":"https://live1.sscloud7.in/live/yovantv/playlist.m3u8"},{"name":"Matha TV","url":"https://live.mathatv.in/mathatv/mathatv/index.m3u8"},{"name":"CRS TV","url":"https://play.applelive.in/crstv/crstv.m3u8"},{"name":"Joy Goodnews TV","url":"https://play.applelive.in/joygoodnewstv/joygoodnewstv.m3u8"},{"name":"Nanjil Natham TV","url":"https://play.applelive.in/hls/nanjilnathamtv.m3u8"},{"name":"Mariya Matha TV","url":"https://play.applelive.in/mariyamathatv/mariyamathatv.m3u8"},{"name":"Deva TV","url":"https://play.applelive.in/devatv/devatv.m3u8"},{"name":"Jesus TV","url":"https://play.applelive.in/jesustv/jesustv.m3u8"},{"name":"Praise TV","url":"https://play.applelive.in/praisetv/praisetv.m3u8"},{"name":"Sharon TV","url":"https://sscloud7.com/live/sharontv/index.m3u8"},{"name":"Vinmeen Music","url":"https://vinmeentv.livebox.co.in/vinmeentvhls/live.m3u8"},{"name":"Jeeva Oli TV","url":"https://jaeppiyar.livebox.co.in/jeevaolitvhls/live.m3u8"},{"name":"Nithya Velicham TV","url":"https://play.applelive.in/nithyavelichamtv/nithyavelichamtv.m3u8"},{"name":"JC TV","url":"https://ipcloud.live/novamani/jctv/index.m3u8"},{"name":"King Of Glory TV","url":"https://ipcloud.live/novamani/kingofglorytv/index.m3u8"},{"name":"Love Joy TV","url":"https://ipcloud.live/novamani/lovejoytv/index.m3u8"},{"name":"Win Vision TV","url":"https://play.applelive.in/winvisiontv/winvisiontv.m3u8"},{"name":"Shekinah TV","url":"https://iptvhls.inet.moe/hls/newchannel_src/index.m3u8"},{"name":"Cross TV","url":"https://ytv.iptv.pics/hls/cross_src/index.m3u8"},{"name":"G Max","url":"https://play.applelive.in/gcv/gcv.m3u8"},{"name":"Jeyam Television","url":"https://jeyamtv.livebox.co.in/JeyamTelevisionhls/JeyamTelevision.m3u8"},{"name":"PCN Channel","url":"https://pcntv.wmsdigital.in/hls/gtv/stream.m3u8"},{"name":"Top TV Thuraiyur","url":"https://stream.onecloudlive.in/toptv/toptvhd/index.m3u8"},{"name":"Jay TV","url":"https://stream.onecloudlive.in/jaytv/jaytvhd/index.m3u8"},{"name":"Annai TV","url":"https://annainew.livebox.co.in/annailivehls/live.m3u8"},{"name":"7Star Television","url":"https://annainew.livebox.co.in/7startvhls/livestream.m3u8"},{"name":"Amma TV","url":"https://annainew.livebox.co.in/ammatvhls/live.m3u8"},{"name":"Sri Sai TV","url":"https://annainew.livebox.co.in/srisaihls/live.m3u8"},{"name":"Isai Saral","url":"https://srnet-bmlive-net.proxy.nellaiiptv.com/isaisaral/mystream/playlist.m3u8"},{"name":"Kanchi Media","url":"https://3.proxy.nellaiiptv.com/NOTV/KANCHIMEDIA/index.m3u8?token=GTR"},{"name":"AVS TV","url":"https://play.applelive.in/avstv/avstv.m3u8"},{"name":"Global TV","url":"https://play.applelive.in/globaltv/globaltv.m3u8"},{"name":"Ayya Agilathirattu TV","url":"https://live1.sscloud7.in/live/ayyatv/playlist.m3u8"},{"name":"Analai Express","url":"https://3.proxy.nellaiiptv.com/ANALAI_MOVIE/index.m3u8?token=GTR"},{"name":"Analai Express Cinema","url":"https://3.proxy.nellaiiptv.com/MONTAMIL_CINEMA/index.m3u8?token=GTR"},{"name":"Makkalpani TV","url":"https://play.applelive.in/mapatv/mapatv.m3u8"},{"name":"Mariya Annai TV","url":"https://play.applelive.in/mariyaannaitv/mariyaannaitv.m3u8"},{"name":"Gospel TV","url":"https://play.applelive.in/gospeltv/gospeltv.m3u8"},{"name":"Jesus Alive Television","url":"https://play.applelive.in/jesusalivetv/jesusalivetv.m3u8"},{"name":"Royal TV","url":"https://play.applelive.in/royaltv/royaltv.m3u8"},{"name":"Ayya TV","url":"https://play.applelive.in/ayyatv/ayyatv.m3u8"},{"name":"Subash TV Tenkasi [Cloud7]","url":"https://server.sscloud7.in/live/subashhd/index.m3u8"},{"name":"Surya TV","url":"https://surya.suriyantv.in/hls/app/index.m3u8"},{"name":"Pasamalar TV","url":"https://stream.sscloud7.in/live/paasamalartv/index.m3u8"},{"name":"Vimal TV","url":"https://stream.onecloudlive.in/karthick/vimaltv/index.m3u8"},{"name":"Deiveega Oli TV","url":"https://stream.onecloudlive.in/karthick/deivegaolitv/index.m3u8"},{"name":"Selva Tamil TV","url":"https://stream.sscloud7.in/live/selvatamiltv/index.mpd"},{"name":"Super TV Dindigul [RojaTV]","url":"https://stream.rojatv.cloud/super/tv/index.m3u8"},{"name":"Ark TV","url":"https://ark.inet.moe/ark/index.m3u8"},{"name":"Ark TV [Ktisma]","url":"https://ktismaservers.in:3917/live/arktvlive.m3u8"},{"name":"ACN TV","url":"https://web.applelive.in/stream/acntv/index.m3u8"},{"name":"Anjai TV","url":"https://web.applelive.in/stream/anjaitv/index.m3u8"},{"name":"Ruhasha TV","url":"https://live.applelive.in/ruhashatv/ruhashatv/index.m3u8"},{"name":"Ezhil TV","url":"https://stream.onecloudlive.in/ezhiltv/ezhilhd/index.m3u8"},{"name":"Crayonz TV","url":"https://sanplayout.xyz/live2/crayonztv/index.m3u8"},{"name":"Sahara TV","url":"https://ipcloud.live/saharatv/saharatvhd/index.m3u8"},{"name":"Tamil Pirai TV","url":"https://kayal.inet.moe/kayal/kayaltv/index.m3u8"},{"name":"Islamic Channel","url":"https://play.applelive.in/islamicchannel/islamicchannel.m3u8"},{"name":"Sharon TV","url":"https://rtmp.bmlive.net/bms/sharontv/index.m3u8"},{"name":"Arputhar Yesu TV","url":"https://arputharyesutv.arputharyesutv.com/live/md/index.m3u8"},{"name":"Arputhar Yesu TV [Livebox]","url":"https://account33.livebox.co.in/jesushelpshls/live.m3u8"},{"name":"Fox TV","url":"https://stream.onecloudlive.in/foxtv/foxtv/index.m3u8"},{"name":"Sri Arjun TV","url":"https://stream.onecloudlive.in/sriarjuntv/sriarjun/index.m3u8"},{"name":"Arasu TV","url":"https://ipcloud.live/ctn/arasu/index.m3u8"},{"name":"Tamil TV","url":"https://ktismaservers.in:3220/hybrid/play.m3u8"},{"name":"Family Channel","url":"https://2-fss-2.streamhoster.com/pl_118/203324-1410936-1/chunklist.m3u8"},{"name":"Life TV","url":"https://lifetv.livebox.co.in/lifetvhls/lifetv.m3u8"},{"name":"News 80 Tamil","url":"https://3.proxy.nellaiiptv.com/NOTV/NEWS80/index.m3u8?token=GTR"},{"name":"We Baduga TV","url":"https://rtmp.bmlive.net/webaduga/webaduga/index.m3u8"},{"name":"Manasu TV","url":"https://stream6.livebox.co.in/manasutvhls/live.m3u8"},{"name":"Madura TV","url":"https://stream.onecloudlive.in/mm/maduratv/index.m3u8"},{"name":"Star Media","url":"https://rtmp.notvstream.in/starmedia/starmedia/index.m3u8"},{"name":"Blue Moon TV","url":"https://rtmp.bmlive.net/bms/bmtv/stream.m3u8"},{"name":"Mathan TV","url":"https://ipcloud.live/mathantv/mathantv/index.mpd"},{"name":"R Plus TV","url":"https://rtmp.applelive.in/rplus/rplus/index.m3u8"},{"name":"City TV","url":"https://stream.onecloudlive.in/citytv/citytv/index.m3u8"},{"name":"TTN TV","url":"https://web.applelive.in/stream/ttntv/index.m3u8"},{"name":"Omm TV Nagercoil","url":"https://web.applelive.in/ommtv/ommtv/index.m3u8"},{"name":"Amma TV Nagercoil","url":"https://web.applelive.in/stream/ammatv/index.m3u8"},{"name":"SR TV","url":"https://web.applelive.in/stream/srtv/index.m3u8"},{"name":"Kanna TV","url":"https://web.applelive.in/stream/kktv/index.m3u8"},{"name":"A1 TV Ariyalur","url":"https://app.ashokadigital.net/app/0fca457c/index.m3u8"},{"name":"S TV","url":"https://apis.avmediawork.in/tvhls/stv.m3u8"},{"name":"Royal TV Guduvancheri","url":"https://cloudstream4k.com/jptvhd/bsk/playlist.m3u8"},{"name":"ATN [RojaTV]","url":"https://stream.rojatv.cloud/ATNHD/onecloud/index.m3u8"},{"name":"Lucky TV","url":"https://live3.onecloudlive.in/luckytv/luckytvhd/index.m3u8"},{"name":"V Tamil","url":"https://3.proxy.nellaiiptv.com/NOTV/VTV1/index.m3u8?token=GTR"},{"name":"V Tamil [OliDigital]","url":"https://hlsstream.olidigital.in/vtv/vtv/index.m3u8"},{"name":"V Tamil [VK Digital]","url":"https://real-vk.proxy.nellaiiptv.com/VTV/index.m3u8"},{"name":"Bhairava TV","url":"https://stream.onecloudlive.in/bhairavatv/bhairavahd/index.m3u8"},{"name":"Joy TV HD","url":"https://ktismaservers.in:3412/live/joytvlive.m3u8"},{"name":"Arighni TV","url":"https://dmtv.iptv.pics/live/dmtv/index.m3u8"},{"name":"Tamil Vision International","url":"https://live.cmr24.fm/TVI/HD/playlist.m3u8"},{"name":"Sooriyan TV","url":"https://live20.bozztv.com/giatv/giatv-Infinittyott/Infinittyott/playlist.m3u8"},{"name":"Sooriyan TV Cinema","url":"https://live20.bozztv.com/giatv/giatv-Sooriyantv/Sooriyantv/playlist.m3u8"},{"name":"Uthamiyae TV","url":"https://kali.vdopanel.com:3169/stream/play.m3u8"},{"name":"Samugam Media","url":"https://ca.streamjo.com/live/samugam.m3u8"},{"name":"EET TV","url":"https://eu.streamjo.com/eetlive/eettv.m3u8"},{"name":"ME24 Tamil","url":"https://stream.onecloudlive.in/orange/ME24TAMIL/index.m3u8"},{"name":"Meiveli TV","url":"https://meiveli.livebox.co.in/MEIVELIMAINhls/meivelimain.m3u8"},{"name":"TWOC TV","url":"https://rtmp.applelive.in/twoctv/twoctv/index.m3u8"},{"name":"Imai TV","url":"https://live20.bozztv.com/akamaissh101/ssh101/imaitv/playlist.m3u8"},{"name":"Salvation TV","url":"https://ktismaservers.in:3902/live/salvationtvlive.m3u8"},{"name":"My Faith TV","url":"https://stream.iplive.xyz/faithtv/faithtv/index.m3u8"},{"name":"Adhisayam TV","url":"https://livetv.adhisayamtv.org/adhisayamtv/83a062a18a761b948a73ad2ba7747a8f.sdp/playlist.m3u8"},{"name":"Thangam TV","url":"https://stream.onecloudlive.in/thangamtv/thangamtvhd/index.m3u8"},{"name":"Good News Time","url":"https://5dd3981940faa.streamlock.net/goodnewstime/goodnewstime/playlist.m3u8"},{"name":"Kathir TV","url":"https://stream.ipcloud.live/kathirtvhd/livestream/index.m3u8"},{"name":"PG TV","url":"https://app.xstream.onecloudlive.in/pgtv/pgtvhd/index.m3u8"},{"name":"Prime Music","url":"https://live.primestream.in/prime/music/index.m3u8"},{"name":"Shakthi Channel","url":"https://cloudstream4k.com/shakthihd/bsk/playlist.m3u8"},{"name":"Pothigai Prime","url":"https://view.apserver.in/tmp_hls5/pothigaiprime/index.m3u8"},{"name":"Idhayam TV","url":"https://sanplayout.xyz/live2/idhayamtv/index.m3u8"},{"name":"Idhayam Kids","url":"https://sanplayout.xyz/live2/idhayamkidz/index.m3u8"},{"name":"A1 Media News","url":"https://sanplayout.xyz/live2/a1medianews/index.m3u8"},{"name":"Jeevaneerodai TV","url":"https://web.applelive.in/jeevaneerodaitv/jeevaneerodaitv/index.m3u8"},{"name":"My Jesus TV","url":"https://5790d294af2dc.streamlock.net/myjesustv/myjesustv/playlist.m3u8"},{"name":"Bible TV","url":"https://account33.livebox.co.in/bibletvhls/live.m3u8"},{"name":"Heaven TV","url":"https://heaventv.livebox.co.in/heaventvhls/live.m3u8"},{"name":"Chittoor TV","url":"https://server.streamwell.in/hls/chittoortvhd.m3u8"},{"name":"Channel 316","url":"https://channel316.livebox.co.in/c316hls/live.m3u8"},{"name":"Grace TV","url":"https://gracetvcgl.livebox.co.in/Gracetvhls/Gracetv.m3u8"},{"name":"Aathi TV","url":"https://5790d294af2dc.streamlock.net/aathitv/aathitv/playlist.m3u8"},{"name":"TNSE","url":"https://5790d294af2dc.streamlock.net/mchanneltv24/mchanneltv24/playlist.m3u8"},{"name":"Chola TV","url":"https://hlsstream.olidigital.in/cholatv/cholatv/index.m3u8?token=dHVsbml0X3N0ZWFsc19zaGl0"},{"name":"Retro Music","url":"https://sanplayout.xyz/live2/retromusichd/playlist.m3u8"},{"name":"Madurai Arasi TV","url":"https://app.xstream.onecloudlive.in/maduraiarasi/livestream/index.m3u8"},{"name":"NRJ TV","url":"https://3.proxy.nellaiiptv.com/DINESH/NRJTV/index.m3u8?token=YAAL"},{"name":"PJ TV","url":"https://3.proxy.nellaiiptv.com/DINESH/PJTV/index.m3u8?token=YAAL"},{"name":"Eye Tamil","url":"https://2.proxy.nellaiiptv.com/EyeMedia/EyeTV/index.m3u8"},{"name":"Eye Tamil Music","url":"https://2.proxy.nellaiiptv.com/EyeMedia/music/index.m3u8"},{"name":"Eye Tamil Comedy","url":"https://2.proxy.nellaiiptv.com/EyeMedia/comedy/index.m3u8"},{"name":"Duresh TV","url":"https://real-vk.proxy.nellaiiptv.com/PDPTV/index.m3u8"},{"name":"Sri Varahi TV","url":"https://real-vk.proxy.nellaiiptv.com/SRIVARAHITV/index.m3u8"},{"name":"Telemax Tamil","url":"https://real-vk.proxy.nellaiiptv.com/TELEMAX/index.m3u8"},{"name":"Sri Vinayaga TV","url":"https://1.proxy.nellaiiptv.com/srivinayagatv/hd/index.m3u8"},{"name":"Sri Vinayaga Movies","url":"https://1.proxy.nellaiiptv.com/srivinayagatv/movies/index.m3u8"},{"name":"Sri Vinayaga Hollywood","url":"https://1.proxy.nellaiiptv.com/srivinayagatv/hollywood/playlist.m3u8"},{"name":"PN TV","url":"https://stream.onecloudlive.in/pntv/pntv/index.m3u8"},{"name":"Sun Smart TV [VK Digital]","url":"https://real-vk.proxy.nellaiiptv.com/SUNSMARTTV/index.m3u8"},{"name":"SD Media (No Signal)","url":"https://real-vk.proxy.nellaiiptv.com/SDMEDIA/index.m3u8"},{"name":"Krish TV","url":"https://stream.onecloudlive.in/krishnatv/krishnatvhd/index.m3u8"},{"name":"Thoma TV","url":"https://stream.onecloudlive.in/thoma/thoma/index.m3u8"},{"name":"Sakthi TV","url":"https://real-vk.proxy.nellaiiptv.com/SAKTHITV/index.m3u8"},{"name":"Lucky TV Tenkasi","url":"https://live.onecloudlive.in/luckytvtk/luckytv/index.m3u8"},{"name":"Vaagai TV","url":"https://stream.ashokadigital.net/VAAGAITV/vaagaitv/index.m3u8"},{"name":"MTN TV","url":"https://rtmp.applelive.in/mtntv/mtntv/index.m3u8"},{"name":"Kirubai TV","url":"https://live.sscloud7.in/live/kirubaitv/index.m3u8"},{"name":"Thogai TV","url":"https://thogaitv.stream.onecloudlive.in/thogaitv/12345678/index.m3u8"}];
-let current=-1, hls=null, filter="all";
+                row.addEventListener('click', () => {
+                    document.querySelectorAll('.channel-row').forEach(r => r.classList.remove('active'));
+                    row.classList.add('active');
+                    playChannel(channel);
+                });
 
-function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function initials(name){
-  return name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase();
-}
-function typeOf(n){
-  n=n.toLowerCase();
-  if(/music|isai|melodies|musix|retro/.test(n)) return "music";
-  if(/movie|cinema|thirai/.test(n)) return "movie";
-  if(/news|media/.test(n)) return "news";
-  if(/jesus|bible|christ|gospel|praise|grace|heaven|salvation|faith|devotional|sakthi|amman|deive|mahima|matha|nithya|shekinah|cross|islamic/.test(n)) return "devotional";
-  return "all";
-}
-function visible(){
-  const q=document.getElementById("search").value.trim().toLowerCase();
-  return channels.filter(c=>(filter==="all"||typeOf(c.name)===filter)&&(!q||c.name.toLowerCase().includes(q)));
-}
-function render(){
-  const arr=visible();
-  document.getElementById("count").textContent=arr.length+" channels";
-  document.getElementById("list").innerHTML=arr.map((c,i)=>{
-    const idx=channels.indexOf(c);
-    const active=idx===current?" active":"";
-    return `<article class="card${active}" data-index="${idx}">
-      <div class="chlogo">${esc(initials(c.name))}</div>
-      <div class="poster">▶</div>
-      <div class="info"><div class="name">${esc(c.name)}</div>
-      <div class="time">LIVE • ${idx+1}</div><div class="bar"><i></i></div></div>
-    </article>`;
-  }).join("");
-  document.querySelectorAll(".card").forEach(el=>el.onclick=()=>play(+el.dataset.index));
-}
-function play(i){
-  if(i<0||i>=channels.length)return;
-  current=i;
-  const c=channels[i], v=document.getElementById("video");
-  document.getElementById("empty").style.display="none";
-  document.getElementById("nowTitle").textContent=c.name;
-  document.getElementById("nowMeta").textContent="Live TV • Channel "+(i+1)+" / "+channels.length;
-  if(hls){hls.destroy();hls=null}
-  v.pause(); v.removeAttribute("src"); v.load();
-  if(c.url.includes(".mpd")){
-    document.getElementById("empty").textContent="This stream is MPEG-DASH (.mpd). Use a DASH-capable player/browser.";
-    document.getElementById("empty").style.display="grid";
-  }else if(window.Hls && Hls.isSupported()){
-    hls=new Hls({enableWorker:true,maxBufferLength:20});
-    hls.loadSource(c.url); hls.attachMedia(v);
-    hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
-    hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){document.getElementById("empty").textContent="Stream unavailable / blocked";document.getElementById("empty").style.display="grid"}});
-  }else if(v.canPlayType("application/vnd.apple.mpegurl")){
-    v.src=c.url; v.play().catch(()=>{});
-  }else{
-    document.getElementById("empty").textContent="HLS is not supported in this browser.";
-    document.getElementById("empty").style.display="grid";
-  }
-  document.getElementById("playerBox").classList.add("show");
-  clearTimeout(window.hideTimer); window.hideTimer=setTimeout(()=>document.getElementById("playerBox").classList.remove("show"),2500);
-  render();
-}
-function move(step){play((current<0?0:current)+step)}
-document.getElementById("prevBtn").onclick=e=>{e.stopPropagation();move(-1)}
-document.getElementById("nextBtn").onclick=e=>{e.stopPropagation();move(1)}
-document.getElementById("playerBox").addEventListener("click",()=>{clearTimeout(window.hideTimer);document.getElementById("playerBox").classList.toggle("show");window.hideTimer=setTimeout(()=>document.getElementById("playerBox").classList.remove("show"),2500)})
-document.getElementById("searchBtn").onclick=()=>{const s=document.getElementById("searchBox");s.style.display=s.style.display==="block"?"none":"block";if(s.style.display==="block")document.getElementById("search").focus()}
-document.getElementById("search").oninput=render;
-document.querySelectorAll(".pill").forEach(p=>p.onclick=()=>{document.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));p.classList.add("active");filter=p.dataset.filter;render()});
-document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")move(1);if(e.key==="ArrowLeft")move(-1)});
-render();
-</script>
+                channelListEl.appendChild(row);
+            });
 
-<script id="tamil-bottom-nav-js">
-document.addEventListener('DOMContentLoaded',()=>{
-  const items=[...document.querySelectorAll('.bottom .nav-item')];
-  items.forEach(item=>{
-    item.addEventListener('click',()=>{
-      items.forEach(x=>x.classList.remove('active'));
-      item.classList.add('active');
-      const tab=item.dataset.tab;
-      if(tab==='live') window.scrollTo({top:0,behavior:'smooth'});
-      // Other tabs currently act as UI navigation selections; existing channel data/player remains intact.
-    });
-  });
-});
-</script>
+            // Play the first channel by default
+            if (channels.length > 0) {
+                playChannel(channels[0]);
+            }
+        }
 
+        function playChannel(channel) {
+            currentChannelNameEl.innerText = channel.name;
+            currentProgramTimeEl.innerText = "Live Broadcast | Streaming Now";
+
+            const streamUrl = channel.url;
+
+            if (Hls.isSupported() && streamUrl.includes('.m3u8')) {
+                if (hls) {
+                    hls.destroy();
+                }
+                hls = new Hls({
+                    // Config settings to handle stream buffering/freezes smoothly
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                    liveSyncDurationCount: 3,
+                    lowLatencyMode: true
+                });
+                hls.loadSource(streamUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play().catch(e => console.log("Autoplay blocked:", e));
+                });
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.hls("Network error, trying to recover...");
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.hls("Media error, trying to recover...");
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl') || streamUrl.includes('.m3u8')) {
+                // Native HLS support (Safari)
+                video.src = streamUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play().catch(e => console.log("Autoplay blocked:", e));
+                });
+            } else {
+                // Fallback for direct MPD or other formats
+                video.src = streamUrl;
+                video.play().catch(e => console.log("Playback error:", e));
+            }
+        }
+
+        // Initialize App
+        renderChannels();
+    </script>
 </body>
 </html>
