@@ -7,8 +7,8 @@
 <title>Tamil Live TV</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
-*{box-sizing:border-box}html,body{margin:0;background:#090909;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-body{min-height:100vh;overflow-x:hidden}.app{max-width:900px;margin:auto;min-height:100vh;background:linear-gradient(#343434 0,#121212 27%,#080808 55%);padding-bottom:105px}
+*{box-sizing:border-box}html,body{margin:0;background:#090909;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;height:100%;overflow:hidden}
+body{min-height:100vh;overflow:hidden}.app{max-width:900px;margin:auto;height:100vh;overflow:hidden;background:linear-gradient(#343434 0,#121212 27%,#080808 55%);padding-bottom:0}
 .top{height:88px;display:flex;align-items:center;padding:18px 18px 10px;gap:14px}
 .logo{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700}.logoMark{width:48px;height:48px;border-radius:50%;background:#d50038;display:grid;place-items:center;box-shadow:0 5px 18px #0008}
 .logoMark:before{content:"▶";font-size:22px;color:white;margin-left:3px}
@@ -16,18 +16,18 @@ body{min-height:100vh;overflow-x:hidden}.app{max-width:900px;margin:auto;min-hei
 .hero{padding:0 12px}.player{position:relative;background:#000;border-radius:17px;height:min(48vw,400px);min-height:230px;overflow:hidden;box-shadow:0 12px 35px #0008}
 video{width:100%;height:100%;object-fit:contain;background:#000}.empty{position:absolute;inset:0;display:grid;place-items:center;color:#777;font-size:15px}
 .playerTitle{padding:14px 10px 5px;font-size:19px;font-weight:700}.meta{color:#aaa;font-size:15px;padding:0 10px 14px}.playerDots{position:absolute;right:18px;bottom:12px;font-size:25px}
-.controls{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;opacity:0;transition:.25s}.player:hover .controls,.player.show .controls{opacity:1}
-.ctrl{border:1px solid #fff4;background:#111b;color:white;border-radius:50%;width:44px;height:44px;font-size:20px}
+.controls{position:absolute;inset:0;display:block;pointer-events:none;opacity:1;transition:.25s}.player:hover .controls,.player.show .controls{opacity:1}
+.ctrl{position:absolute;top:50%;transform:translateY(-50%);border:1px solid #fff5;background:#111c;color:white;border-radius:50%;width:48px;height:48px;font-size:30px;line-height:1;display:grid;place-items:center;pointer-events:auto;backdrop-filter:blur(8px);box-shadow:0 4px 15px #0008}.ctrl:first-child{left:14px}.ctrl:last-child{right:14px}
 .pillrow{display:flex;gap:12px;overflow:auto;padding:18px 12px 12px;scrollbar-width:none}.pillrow::-webkit-scrollbar{display:none}
 .pill{flex:0 0 auto;border:1px solid #777;background:#222;color:#fff;padding:12px 18px;border-radius:25px;font-size:15px}.pill.active{background:#9d6873;border-color:#d79aa7}
 .searchbox{display:none;padding:0 12px 12px}.searchbox input{width:100%;padding:14px 18px;border-radius:24px;border:1px solid #555;background:#202020;color:white;outline:none;font-size:16px}
-.list{padding:4px 12px 20px;display:flex;flex-direction:column;gap:12px}.card{display:grid;grid-template-columns:150px 120px 1fr;gap:14px;align-items:center;background:#1d1d1f;border-radius:20px;padding:10px;min-height:115px;cursor:pointer;transition:.2s}.card:hover{background:#29292b;transform:translateY(-1px)}
+.list{padding:4px 12px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;overflow-x:hidden;height:calc(100vh - 650px);min-height:160px;scrollbar-width:thin}.card{display:grid;grid-template-columns:150px 120px 1fr;gap:14px;align-items:center;background:#1d1d1f;border-radius:20px;padding:10px;min-height:115px;cursor:pointer;transition:.2s}.card:hover{background:#29292b;transform:translateY(-1px)}
 .chlogo{height:100px;border-radius:18px;background:linear-gradient(135deg,#252525,#101010);display:grid;place-items:center;font-size:21px;font-weight:800;text-align:center;padding:10px;overflow:hidden}
 .chlogo img{width:100%;height:100%;object-fit:contain}.poster{height:100px;border-radius:18px;overflow:hidden;background:#2a2a2a;display:grid;place-items:center;color:#777;font-size:32px}
 .info{min-width:0}.name{font-size:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.time{color:#aaa;margin-top:22px;font-size:15px}.bar{height:5px;border-radius:10px;background:#777;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;width:62%;background:#eee}.card.active{outline:2px solid #d13b68}
 .bottom{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:14px;width:min(680px,calc(100% - 30px));height:76px;border-radius:40px;background:#252527e8;border:1px solid #7776;box-shadow:0 8px 35px #000b;display:flex;justify-content:space-around;align-items:center;backdrop-filter:blur(18px)}
 .nav{width:20%;text-align:center;color:#eee;font-size:13px}.nav b{display:block;font-size:28px;line-height:34px}.nav.active{color:#ff416d}.count{color:#999;font-size:12px;margin:4px 12px}
-@media(max-width:650px){.app{width:100%}.top{height:86px;padding:16px 14px 8px}.logo{font-size:23px}.round{width:50px;height:50px}.hero{padding:0}.player{border-radius:15px;height:51vw;min-height:220px}.playerTitle{font-size:18px}.card{grid-template-columns:92px 108px 1fr;gap:10px;min-height:112px;padding:8px;border-radius:18px}.chlogo,.poster{height:96px;border-radius:15px}.name{font-size:16px}.time{margin-top:14px;font-size:13px}.list{gap:10px;padding:4px 10px}.pillrow{padding-left:10px}.bottom{height:72px;bottom:8px;width:calc(100% - 20px)}}
+@media(max-width:650px){.app{width:100%}.top{height:86px;padding:16px 14px 8px}.logo{font-size:23px}.round{width:50px;height:50px}.hero{padding:0}.player{border-radius:15px;height:51vw;min-height:220px}.playerTitle{font-size:18px}.card{grid-template-columns:92px 108px 1fr;gap:10px;min-height:112px;padding:8px;border-radius:18px}.chlogo,.poster{height:96px;border-radius:15px}.name{font-size:16px}.time{margin-top:14px;font-size:13px}.list{gap:10px;padding:4px 10px;height:calc(100vh - 610px);min-height:150px}.pillrow{padding-left:10px}.bottom{height:72px;bottom:8px;width:calc(100% - 20px)}}
 @media(max-width:430px){.card{grid-template-columns:82px 94px 1fr}.chlogo,.poster{height:92px}.name{font-size:15px}.time{font-size:12px}.logoMark{width:44px;height:44px}.logo{font-size:21px}}
 </style>
 </head>
