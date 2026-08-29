@@ -310,7 +310,7 @@
     <!-- Header -->
     <div class="header">
         <div class="logo-area">
-            <div class="app-logo">▶ ANANTH</div>
+            <div class="app-logo">▶ JioTV</div>
             <span class="app-title">Web TV</span>
         </div>
         <div class="header-icons">
@@ -334,7 +334,7 @@
 
     <!-- Scrolling Text Banner -->
     <div class="scrolling-text">
-        <span>🔴 LIVE TV — அனைத்து LOCAL சேனல்களையும் இங்கே பார்க்கலாம் 📺 'Scan Live' பட்டனை அழுத்தி சிக்னல் உள்ள சேனல்களை மட்டும் FILTER செய்துகொள்ளலாம்!</span>
+        <span>🔴 LIVE TV — அனைத்து சேனல்களையும் இங்கே பார்க்கலாம் 📺 'Scan Live' பட்டனை அழுத்தி ஆன்லைனில் உள்ள சேனல்களை மட்டும் வடிகட்டிக் கொள்ளலாம்!</span>
     </div>
 
     <!-- Channels List -->
@@ -357,10 +357,10 @@
 
         function renderChannels(listToRender) {
             channelListEl.innerHTML = '';
-            liveCountBadge.innerText = `Total: ${listToRender.length}`;
+            liveCountBadge.innerText = `Online: ${listToRender.length}`;
             
             if (listToRender.length === 0) {
-                channelListEl.innerHTML = '<div style="text-align:center; color:#aaa; font-size:11px; padding:20px;">No channels found. Click "Scan Live" to check signals.</div>';
+                channelListEl.innerHTML = '<div style="text-align:center; color:#aaa; font-size:11px; padding:20px;">No online channels found. Click "Scan Live" to check signals.</div>';
                 return;
             }
 
@@ -443,6 +443,7 @@
                     const isLive = await checkChannelLive(channel);
                     checked++;
                     scanStatusText.innerText = `Checking channels: ${checked} / ${total}`;
+                    // Hide offline/unplayable channels completely and only keep online ones
                     if (isLive) {
                         activeChannels.push({ ...channel, originalIndex: actualIndex });
                     }
